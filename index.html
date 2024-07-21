@@ -18,11 +18,76 @@
   </head>
   <body>
     <!-- Header -->
-    <header>
-        <div>
-          <h3>Danh sách phòng</h3>
-        </div>
-            </header>
+      <header>
+          <div>
+            <h3>Danh sách phòng</h3>
+          </div>
+      </header>
+    <!-- Body -->
+    <div class="body">
+      <!-- Row 1 -->
+      <div class="row1">
+              <!-- Timer -->
+              <div class="timer">
+                <h1 id="current-time"></h1>
+                <p id="current-date"></p>
+              </div>
+              <!-- Filter -->
+              <div class="filter">
+                    <!-- Status -->
+                    <div class="status">
+                            <div class="wait-room">Phòng đang chờ</div>
+                            <div class="use-room">Phòng đang sử dụng</div>
+                    </div>
+                    <!-- Filter selection -->
+                    <div class="select">
+                            <div class="select1">
+                              <h5 class="select1-margin">Số người</h5>
+                              <select class="select1-margin" name="amount-ppl" id="amount-ppl" size="">
+                                <option value="all">Tất cả</option>
+                              </select>
+                              <h5 class="select1-margin-alt">Phòng số</h5>
+                              <input class="select1-margin" type="text" id="room-num" name="room-num" size="10">
+                            </div>
+                            <div class="select2">
+                              <h5 class="btn-mr">Loại phòng</h5>
+                              <div class="btn-mr">
+                                    <input type="radio" id="all-room" name="room-select" value="all-room"  />
+                                    <h5><label for="all-room">Tất cả</label></h5>
+                              </div>
+                              <div class="btn-mr">
+                                    <input type="radio" id="std-room" name="room-select" value="std-room" />
+                                    <h5><label for="std-room">Phòng thường</label></h5>
+                              </div>
+                              <div class="btn-mr">
+                                    <input type="radio" id="vip-room" name="room-select" value="vip-room" />
+                                    <h5><label for="vip-room">Phòng VIP</label></h5>
+                              </div>
+                            </div>
+
+                    </div>
+                <!-- Search and refresh -->
+              <div class="filter-operation">
+                      <!-- Search bar -->
+                      <div class="search">
+                        <span class="mr-5">🔎</span>
+                        <span>Tìm</span>
+                      </div>
+                      <!-- Refresh bar -->
+                      <div class="refresh">
+                        <span>Làm mới</span>
+                      </div>
+              </div>       
+              </div>
+      </div>
+      <!-- Row 2 -->
+      <div class="row2">
+        <!-- Utilities -->
+        <div class="utils">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</div>
+        <!-- Display -->
+        <div class="display">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</div>
+      </div>
+    </div>
     <!-- Footer -->
     <footer>
               <!-- The first footer component  -->
@@ -51,5 +116,6 @@
         <div class="footer2">Vừa vào phòng $$</div>
       </div>
     </footer>
+    <script src="time-date.js"></script>
   </body>
 </html>
