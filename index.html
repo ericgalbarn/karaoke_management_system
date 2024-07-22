@@ -47,21 +47,21 @@
                                 <option value="all">Tất cả</option>
                               </select>
                               <h5 class="select1-margin-alt">Phòng số</h5>
-                              <input class="select1-margin" type="text" id="room-num" name="room-num" size="10">
+                              <input class="select1-margin" type="search" id="search-input" name="room-num" size="10" >
                             </div>
                             <div class="select2">
                               <h5 class="btn-mr">Loại phòng</h5>
                               <div class="btn-mr">
-                                    <input type="radio" id="all-room" name="room-select" value="all-room"  />
-                                    <h5><label for="all-room">Tất cả</label></h5>
+                                    <input class="button-value" type="radio" id="all-room" name="room-select" value="all-room" onclick="filterRoom('all')"  />
+                                    <h5><label for="all-room" >Tất cả</label></h5>
                               </div>
                               <div class="btn-mr">
-                                    <input type="radio" id="std-room" name="room-select" value="std-room" />
+                                    <input class="button-value" type="radio" id="std-room" name="room-select" value="std-room" onclick="filterRoom('std-room')"  />
                                     <h5><label for="std-room">Phòng thường</label></h5>
                               </div>
                               <div class="btn-mr">
-                                    <input type="radio" id="vip-room" name="room-select" value="vip-room" />
-                                    <h5><label for="vip-room">Phòng VIP</label></h5>
+                                    <input class="button-value" type="radio" id="vip-room"   name="room-select" value="vip-room" onclick="filterRoom('vip-room')" />
+                                    <h5><label for="vip-room"> Phòng VIP</label></h5>
                               </div>
                             </div>
 
@@ -69,7 +69,7 @@
                 <!-- Search and refresh -->
               <div class="filter-operation">
                       <!-- Search bar -->
-                      <div class="search">
+                      <div class="search" id="search">
                         <span class="mr-5">🔎</span>
                         <span>Tìm</span>
                       </div>
@@ -83,9 +83,45 @@
       <!-- Row 2 -->
       <div class="row2">
         <!-- Utilities -->
-        <div class="utils">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</div>
+        <div class="utils">
+          <div class="green-box">
+            <span>Đặt phòng ngay</span>
+            <span>(F4)</span>
+          </div>
+          <div class="green-box">
+            <span>Đặt phòng chờ</span>
+            <span>(F5)</span>
+          </div>
+          <div class="grey-box">
+            <span>Nhận phòng chờ</span>
+            <span>(F6)</span>
+          </div>
+          <div class="grey-box">
+            <span>Hủy phòng chờ</span>
+            <span>(F7)</span>
+          </div>
+          <div class="green-box">
+            <span>Xem chi tiết</span>
+            <span>(F8)</span>
+          </div>
+          <div class="grey-box">
+            <span>Chuyển phòng</span>
+            <span>(F9)</span>
+          </div>
+          <div class="grey-box">
+            <span>Dịch vụ</span>
+            <span>(F10)</span>
+          </div>
+          <div class="grey-box">
+            <span>Tính tiền</span>
+            <span>(F11)</span>
+          </div>
+        </div>
         <!-- Display -->
-        <div class="display">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</div>
+        <div class="display" >
+          <div id="room"></div>
+          <script src="room-filter.js"></script>
+        </div>
       </div>
     </div>
     <!-- Footer -->
@@ -93,23 +129,24 @@
               <!-- The first footer component  -->
         <div class="footer1">
           <div id="obj1">
-            <span class="material-symbols-outlined" id="com1"> computer </span>
-            Phòng trống
+            <span> <img src="./img/blue-computer.png" width="24px" height="24px"> </span>
+            <span class="icon-text">Phòng trống ()</span>
           </div>
           <div id="obj2">
-            <span class="material-symbols-outlined" id="com2"> computer </span>
-            Phòng chờ
+            <span> <img src="./img/yellow-desktop.png" width="24px" height="24px"> </span>
+            <span class="icon-text">Phòng chờ ()</span>
           </div>
           <div id="obj3">
-            <span class="material-symbols-outlined" id="com3"> computer </span>
-            Phòng đang sử dụng
+            <span> <img src="./img/red-computer.png" width="24px" height="24px"> </span>
+            <span class="icon-text">Phòng đang sử dụng ()</span>
           </div>
           <div id="obj4">
-            <span class="material-symbols-outlined" id="com4"> computer </span>
-            Phòng tạm
+            <span> <img src="./img/orange-computer.png" width="24px" height="24px"> </span>
+            <span class="icon-text">Phòng tạm ()</span>
           </div>
           <div id="obj5">
-            <span class="crown-icon">👑</span> Phòng VIP
+            <span> <img src="./img/crown.png" width="24px" height="24px"> </span>
+            <span class="icon-text vip-icon">Phòng VIP</span>
           </div>
         </div>
         <!-- The second footer component -->
