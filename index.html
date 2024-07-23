@@ -43,8 +43,14 @@
                     <div class="select">
                             <div class="select1">
                               <h5 class="select1-margin">Số người</h5>
-                              <select class="select1-margin" name="amount-ppl" id="amount-ppl" size="">
-                                <option value="all">Tất cả</option>
+                              <select class="select1-margin" name="amount-ppl" id="amount-ppl" >
+                                
+                                <option value="all" onclick="filterRoom('all')">Tất cả</option>
+                                <option value="5-pp" onclick="filterRoom('5-pp')" class="filter-capacity" data-capacity="5">5 Người</option>
+                                <option value="10-pp" onclick="filterRoom('10-pp')" class="filter-capacity" data-capacity="10">10 Người</option>
+                                <option value="15-pp" onclick="filterRoom('15-pp')" class="filter-capacity" data-capacity="15">15 Người</option>
+                                <option value="20-pp" onclick="filterRoom('20-pp')" class="filter-capacity" data-capacity="20">20 Người</option>
+            
                               </select>
                               <h5 class="select1-margin-alt">Phòng số</h5>
                               <input class="select1-margin" type="search" id="search-input" name="room-num" size="10" >
@@ -73,8 +79,31 @@
                         <span class="mr-5">🔎</span>
                         <span>Tìm</span>
                       </div>
-                      <!-- Refresh bar -->
-                      <div class="refresh">
+<!-- Reservation Form  -->
+      <form>
+        <div class="payment">
+                  <h1 class="payTitle">Thông Tin Đặt Phòng</h1>
+                  <label>Tên người đặt phòng</label>
+                  <input id="name" name="name" type="text" placeholder="Nhập tên người đặt phòng...." class="payInput">
+                  <label>Số phòng muốn đặt</label>
+                  <input id="id" name="id" type="text" placeholder="Nhập số phòng....." class="payInput">
+                  <label>Thời gian đặt phòng</label>
+                  <input id="time" name="time" type="text" placeholder="Nhập thời gian sử dụng phòng...." class="payInput">
+                  <label>Số người đặt phòng</label>
+                  <input id="capacity" name="capacity" type="text" placeholder="Nhập số người sử dụng phòng....." class="payInput">
+                  <label>Loại phòng</label>
+                  <select id="room-type" name="type">
+                    <option id="std-room">Phòng thường</option>
+                    <option id="vip-room">Phòng VIP</option>
+                  </select>
+                  <button type="submit" id="exportBtn" class="saveButton">Lưu thông tin và đặt Phòng</button>
+                  <span class="close">X</span>
+
+                  <script src="localStorage.js"></script>
+        </div>
+      </form>
+<!-- Refresh bar -->
+                      <div class="refresh productButton" >
                         <span>Làm mới</span>
                       </div>
               </div>       
@@ -130,19 +159,19 @@
         <div class="footer1">
           <div id="obj1">
             <span> <img src="./img/blue-computer.png" width="24px" height="24px"> </span>
-            <span class="icon-text">Phòng trống ()</span>
+            <span class="icon-text">Phòng trống <span id="phong-trong-count">(0)</span></span>
           </div>
           <div id="obj2">
             <span> <img src="./img/yellow-desktop.png" width="24px" height="24px"> </span>
-            <span class="icon-text">Phòng chờ ()</span>
+            <span class="icon-text">Phòng chờ <span id="phong-cho-count">(0)</span></span>
           </div>
           <div id="obj3">
             <span> <img src="./img/red-computer.png" width="24px" height="24px"> </span>
-            <span class="icon-text">Phòng đang sử dụng ()</span>
+            <span class="icon-text">Phòng đang sử dụng <span id="phong-dang-su-dung-count">(0)</span></span>
           </div>
           <div id="obj4">
             <span> <img src="./img/orange-computer.png" width="24px" height="24px"> </span>
-            <span class="icon-text">Phòng tạm ()</span>
+            <span class="icon-text">Phòng tạm <span id="phong-tam-count">(0)</span></span>
           </div>
           <div id="obj5">
             <span> <img src="./img/crown.png" width="24px" height="24px"> </span>
@@ -150,7 +179,7 @@
           </div>
         </div>
         <!-- The second footer component -->
-        <div class="footer2">Vừa vào phòng $$</div>
+        <div class="footer2" id="last-entered-room">Vừa vào phòng $$</div>
       </div>
     </footer>
     <script src="time-date.js"></script>
