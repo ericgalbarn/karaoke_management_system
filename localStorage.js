@@ -30,15 +30,14 @@ form.addEventListener("submit", (e) => {
       if (response.ok) {
         console.log("File successfully updated");
       } else {
-        console.error("Error updating file");
+        const errorText = await response.text();
+        console.error("Error updating file:", errorText);
       }
     } else {
-      console.error('No data found in localStorage with the key "yourKey".');
+      console.error('No data found in localStorage with the key "form".');
     }
   }
 
-  // Attach event listener to the button
-  document
-    .getElementById("exportBtn")
-    .addEventListener("click", exportToJsonFile);
+  // Call the exportToJsonFile function
+  exportToJsonFile();
 });

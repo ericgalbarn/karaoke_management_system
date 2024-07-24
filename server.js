@@ -2,43 +2,42 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const path = require("path");
-const cors = require("cors"); // Import the CORS middleware
+const cors = require("cors");
 
 const imagePaths = {
   "Phòng trống VIP": "./img/blue-crown.png",
-  "Phòng trống VIP": "./img/orange-crown.png",
-  "Phòng trống VIP": "./img/red-crown.png",
-  "Phòng trống VIP": "./img/yellow-crown.png",
-
-  // Add other mappings here if needed
+  "Phòng chờ": "./img/yellow-desktop.png",
+  "Phòng đang sử dụng": "./img/red-computer.png",
+  "Phòng trống": "./img/blue-computer.png",
+  "Phòng tạm": "./img/orange-computer.png",
 };
 
 const app = express();
 const port = 3000;
 
-app.use(cors()); // Enable CORS for all routes
+app.use(cors());
 app.use(bodyParser.json());
 
-// Endpoint to update data.json
 app.post("/update-json", (req, res) => {
+  console.log("Request body:", req.body); // Log the request body
   const data = req.body;
 
   // Add the image path based on the type
-  if (newRoomData.type && imagePaths[newRoomData.type]) {
-    newRoomData.image = imagePaths[newRoomData.type];
+  if (data.type && imagePaths[data.type]) {
+    data.image = imagePaths[data.type];
   }
 
-  const dataFilePath = path.join(__dirname, "data.json"); // Constructs the full path to data.json
+  const dataFilePath = path.join(__dirname, "data.json");
 
   fs.writeFile(dataFilePath, JSON.stringify(data, null, 2), (err) => {
     if (err) {
+      console.error("Error writing to file:", err);
       return res.status(500).send("Error writing to file");
     }
     res.send("File successfully updated");
   });
 });
 
-// Optional: A route for the root URL to avoid "CANNOT GET /" error
 app.get("/", (req, res) => {
   res.send("Server is running.");
 });
