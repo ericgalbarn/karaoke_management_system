@@ -8,8 +8,8 @@ form.addEventListener("submit", (e) => {
   const json = JSON.stringify(obj);
   localStorage.setItem("form", json);
 
+  // Display the newly generated object generated on the LocalStorage in the web console
   let _retrieveUserData = JSON.parse(localStorage.getItem("form"));
-
   console.log(_retrieveUserData);
 
   // Function to export localStorage data to the server

@@ -243,7 +243,7 @@ input,
   margin-top: 10px;
   margin-bottom: 5px;
 }
-.refresh {
+.make_new {
   height: 20px;
   width: 70px;
   background-color: rgb(90, 113, 133);
@@ -474,4 +474,18 @@ img {
 
 .card {
   cursor: pointer;
+}
+
+.message-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #4caf50;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  font-size: 18px;
+  z-index: 1000;
+  display: none;
 }
