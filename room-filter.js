@@ -28,7 +28,7 @@ const roomData = {
     },
     {
       name: "Nam ",
-      id: "020",
+      id: "029",
       time: "4h",
       capacity: "12",
       type: "Phòng thường",
@@ -36,7 +36,7 @@ const roomData = {
     },
     {
       name: "Nam ",
-      id: "020",
+      id: "022",
       time: "4h",
       capacity: "12",
       type: "Phòng thường",
@@ -44,7 +44,7 @@ const roomData = {
     },
     {
       name: "Nam ",
-      id: "020",
+      id: "044",
       time: "4h",
       capacity: "12",
       type: "Phòng thường",
@@ -52,7 +52,7 @@ const roomData = {
     },
     {
       name: "Nam ",
-      id: "020",
+      id: "025",
       time: "4h",
       capacity: "12",
       type: "Phòng thường",
@@ -60,7 +60,7 @@ const roomData = {
     },
     {
       name: "Nam ",
-      id: "020",
+      id: "021",
       time: "4h",
       capacity: "12",
       type: "Phòng thường",
@@ -68,7 +68,7 @@ const roomData = {
     },
     {
       name: "Nam ",
-      id: "020",
+      id: "075",
       time: "4h",
       capacity: "12",
       type: "Phòng thường",
@@ -76,7 +76,7 @@ const roomData = {
     },
     {
       name: "Nam ",
-      id: "020",
+      id: "255",
       time: "4h",
       capacity: "12",
       type: "Phòng thường",
