@@ -64,7 +64,7 @@ const roomData = {
       time: "4h",
       capacity: "12",
       type: "Phòng thường",
-      image: yellow_com,
+      image: yellow_crown,
     },
     {
       name: "Nam ",
@@ -160,7 +160,14 @@ function createRoomCards() {
       if (currentImg === red_com || currentImg === red_crown) {
         alert("Phòng đã đầy. Vui lòng chọn phòng khác");
         selectedRoom = null;
-      } else if (currentImg === blue_com || currentImg === blue_crown) {
+      } else if (
+        currentImg === blue_com ||
+        currentImg === blue_crown ||
+        currentImg === yellow_com ||
+        currentImg === yellow_crown ||
+        currentImg === orange_com ||
+        currentImg === orange_crown
+      ) {
         selectedRoom = card;
       } else {
         selectedRoom = null;
@@ -324,3 +331,143 @@ document.addEventListener("keydown", function (event) {
     handleF4Press();
   }
 });
+
+// Add event listener to "Đặt phòng chờ" button
+document
+  .querySelector(".green-box:nth-of-type(2)")
+  .addEventListener("click", () => {
+    if (selectedRoom) {
+      if (
+        selectedRoom.querySelector("img").getAttribute("src") === blue_com ||
+        selectedRoom.querySelector("img").getAttribute("src") === blue_crown
+      ) {
+        if (confirm("Quý khách có chắc chắn muốn chọn phòng này không?")) {
+          let image = selectedRoom.querySelector("img");
+          if (image.getAttribute("src") === blue_com) {
+            image.setAttribute("src", yellow_com);
+          } else {
+            image.setAttribute("src", yellow_crown);
+          }
+          updateFooterCounts();
+          selectedRoom = null;
+        }
+      } else {
+        alert("Vui lòng chọn phòng trống có sẵn.");
+      }
+    } else {
+      alert("Vui lòng chọn phòng trống có sẵn.");
+    }
+  });
+
+// Modify the F5 Button from the User's keyboard to assign F5 key command with the "Đặt phòng chờ" button
+function handleF5Press() {
+  const greenBox = document.querySelector(".green-box:nth-of-type(2)");
+  if (greenBox) {
+    greenBox.click(); // Simulate a click on the first "Đặt phòng chờ" button
+  }
+}
+
+document.addEventListener("keydown", function (event) {
+  // Check if the pressed key is F5
+  if (event.key === "F5" || event.keyCode === 116) {
+    event.preventDefault(); // Prevent the default F5 behavior
+    handleF5Press();
+  }
+});
+
+// Add event listener to "Nhận phòng chờ" button
+document
+  .querySelector(".grey-box:nth-of-type(3)")
+  .addEventListener("click", () => {
+    if (selectedRoom) {
+      if (
+        selectedRoom.querySelector("img").getAttribute("src") === yellow_com ||
+        selectedRoom.querySelector("img").getAttribute("src") === yellow_crown
+      ) {
+        if (confirm("Quý khách có chắc chắn muốn chọn phòng này không?")) {
+          let image = selectedRoom.querySelector("img");
+          if (image.getAttribute("src") === yellow_com) {
+            image.setAttribute("src", red_com);
+          } else {
+            image.setAttribute("src", red_crown);
+          }
+          updateFooterCounts();
+          selectedRoom = null;
+        }
+      } else {
+        alert("Vui lòng chọn phòng trống có sẵn.");
+      }
+    } else {
+      alert("Vui lòng chọn phòng trống có sẵn.");
+    }
+  });
+
+// Add event listener to "Nhận phòng chờ" button for the F6 key press
+document.addEventListener("keydown", function (event) {
+  // Check if the pressed key is F6
+  if (event.key === "F6" || event.keyCode === 117) {
+    event.preventDefault(); // Prevent the default F6 behavior
+    const greyBox = document.querySelector(".grey-box:nth-of-type(3)");
+    if (greyBox) {
+      greyBox.click(); // Simulate a click on the "Nhận phòng chờ" button
+    }
+  }
+});
+
+// Add event listener to "Hủy phòng chờ" button
+document
+  .querySelector(".grey-box:nth-of-type(4)")
+  .addEventListener("click", () => {
+    if (selectedRoom) {
+      if (
+        selectedRoom.querySelector("img").getAttribute("src") === yellow_com ||
+        selectedRoom.querySelector("img").getAttribute("src") === yellow_crown
+      ) {
+        if (confirm("Quý khách có chắc chắn muốn chọn phòng này không?")) {
+          let image = selectedRoom.querySelector("img");
+          if (image.getAttribute("src") === yellow_com) {
+            image.setAttribute("src", blue_com);
+          } else {
+            image.setAttribute("src", blue_crown);
+          }
+          updateFooterCounts();
+          selectedRoom = null;
+        }
+      } else {
+        alert("Vui lòng chọn phòng trống có sẵn.");
+      }
+    } else {
+      alert("Vui lòng chọn phòng trống có sẵn.");
+    }
+  });
+
+// Add event listener to "Hủy phòng chờ (F7)" button
+document.addEventListener("keydown", function (event) {
+  // Check if the pressed key is F7
+  if (event.key === "F7" || event.keyCode === 118) {
+    event.preventDefault(); // Prevent the default F7 behavior
+    handleF7Press();
+  }
+});
+
+function handleF7Press() {
+  if (selectedRoom) {
+    const image = selectedRoom.querySelector("img");
+    const currentImg = image.getAttribute("src");
+    if (currentImg === yellow_com || currentImg === yellow_crown) {
+      if (confirm("Bạn có chắc chắn muốn hủy phòng chờ này không?")) {
+        if (currentImg === yellow_com) {
+          image.setAttribute("src", blue_com);
+        } else {
+          image.setAttribute("src", blue_crown);
+        }
+        updateFooterCounts();
+        selectedRoom = null;
+      }
+    } else {
+      alert("Vui lòng chọn phòng trống có sẵn.");
+    }
+  } else {
+    alert("Vui lòng chọn phòng trống có sẵn.");
+  }
+}
