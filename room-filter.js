@@ -472,10 +472,17 @@ function handleF7Press() {
   }
 }
 
-//
 // Add event listener to "Xem chi tiết" button
 const viewDetailsButton = document.querySelector(".green-box:nth-of-type(5)");
 viewDetailsButton.addEventListener("click", showRoomDetails);
+
+// Add event listener for F8 key
+document.addEventListener("keydown", function (event) {
+  if (event.key === "F8" || event.keyCode === 119) {
+    event.preventDefault(); // Prevent the default F8 behavior
+    viewDetailsButton.click(); // Simulate a click on the "Xem chi tiết" button
+  }
+});
 
 function showRoomDetails() {
   if (selectedRoom) {
@@ -538,11 +545,3 @@ function getRoomStatus(room) {
     return "Phòng tạm";
   }
 }
-
-// Add event listener for F8 key
-document.addEventListener("keydown", function (event) {
-  if (event.key === "F8" || event.keyCode === 119) {
-    event.preventDefault(); // Prevent the default F8 behavior
-    viewDetailsButton.click(); // Simulate a click on the "Xem chi tiết" button
-  }
-});
