@@ -471,3 +471,78 @@ function handleF7Press() {
     alert("Vui lòng chọn phòng trống có sẵn.");
   }
 }
+
+//
+// Add event listener to "Xem chi tiết" button
+const viewDetailsButton = document.querySelector(".green-box:nth-of-type(5)");
+viewDetailsButton.addEventListener("click", showRoomDetails);
+
+function showRoomDetails() {
+  if (selectedRoom) {
+    let roomId = selectedRoom
+      .querySelector(".room-id")
+      .innerText.split(":")[1]
+      .trim();
+    let roomCapacity = selectedRoom.querySelector(".room-capacity").innerText;
+    let roomType = selectedRoom.classList.contains("vip-room")
+      ? "Phòng VIP"
+      : "Phòng thường";
+    let roomStatus = getRoomStatus(selectedRoom);
+
+    document.getElementById(
+      "room-id-detail"
+    ).textContent = `Số phòng: ${roomId}`;
+    document.getElementById(
+      "room-capacity-detail"
+    ).textContent = `Sức chứa: ${roomCapacity}`;
+    document.getElementById(
+      "room-type-detail"
+    ).textContent = `Loại phòng: ${roomType}`;
+    document.getElementById(
+      "room-status-detail"
+    ).textContent = `Trạng thái: ${roomStatus}`;
+
+    document.getElementById("room-details-overlay").style.display = "block";
+  } else {
+    alert("Vui lòng chọn một phòng trước khi xem chi tiết.");
+  }
+}
+
+function closeRoomDetails() {
+  document.getElementById("room-details-overlay").style.display = "none";
+}
+
+// Close the details card when clicking the close button
+document
+  .querySelector(".close-details")
+  .addEventListener("click", closeRoomDetails);
+
+// Close the details card when clicking outside of it
+window.addEventListener("click", function (event) {
+  // Check if the clicked element is NOT the card or any of its children
+  if (!document.getElementById("room-details-card").contains(event.target)) {
+    closeRoomDetails();
+  }
+});
+
+function getRoomStatus(room) {
+  let image = room.querySelector("img");
+  let currentImg = image.getAttribute("src");
+  if (currentImg === blue_com || currentImg === blue_crown) {
+    return "Phòng trống";
+  } else if (currentImg === yellow_com || currentImg === yellow_crown) {
+    return "Phòng chờ";
+  } else if (currentImg === red_com || currentImg === red_crown) {
+    return "Phòng đang sử dụng";
+  } else if (currentImg === orange_com || currentImg === orange_crown) {
+    return "Phòng tạm";
+  }
+}
+
+// Add event listener for F8 key
+document.addEventListener("keydown", function (event) {
+  if (event.key === "F8" || event.keyCode === 119) {
+    event.preventDefault(); // Prevent the default F8 behavior
+    viewDetailsButton.click(); // Simulate a click on the "Xem chi tiết" button
+  }
+});
