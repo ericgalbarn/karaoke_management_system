@@ -518,6 +518,12 @@ img {
   border-radius: 5px;
 }
 
+.details-heading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .close-details {
   color: #aaa;
   float: right;

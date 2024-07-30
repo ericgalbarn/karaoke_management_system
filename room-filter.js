@@ -17,14 +17,16 @@ const roomData = {
       capacity: "10",
       type: "Phòng VIP",
       image: red_crown,
+      pricePerHour: 100000,
     },
     {
-      name: "Nam ",
+      name: "Jeffrey Epstein ",
       id: "020",
-      time: "4h",
-      capacity: "12",
-      type: "Phòng thường",
+      time: "6h",
+      capacity: "100",
+      type: "Phòng VIP",
       image: blue_com,
+      pricePerHour: 100000,
     },
     {
       name: "Nam ",
@@ -33,6 +35,7 @@ const roomData = {
       capacity: "12",
       type: "Phòng thường",
       image: blue_com,
+      pricePerHour: 100000,
     },
     {
       name: "Nam ",
@@ -41,6 +44,7 @@ const roomData = {
       capacity: "12",
       type: "Phòng thường",
       image: blue_crown,
+      pricePerHour: 100000,
     },
     {
       name: "Nam ",
@@ -49,6 +53,7 @@ const roomData = {
       capacity: "12",
       type: "Phòng thường",
       image: blue_com,
+      pricePerHour: 100000,
     },
     {
       name: "Nam ",
@@ -57,6 +62,7 @@ const roomData = {
       capacity: "12",
       type: "Phòng thường",
       image: blue_com,
+      pricePerHour: 100000,
     },
     {
       name: "Nam ",
@@ -73,6 +79,7 @@ const roomData = {
       capacity: "12",
       type: "Phòng thường",
       image: red_com,
+      pricePerHour: 100000,
     },
     {
       name: "Nam ",
@@ -81,6 +88,7 @@ const roomData = {
       capacity: "12",
       type: "Phòng thường",
       image: red_com,
+      pricePerHour: 100000,
     },
   ],
 };
@@ -496,6 +504,31 @@ function showRoomDetails() {
       : "Phòng thường";
     let roomStatus = getRoomStatus(selectedRoom);
 
+    // Find the room data
+    let roomInfo = roomData.rooms.find((room) => room.id === roomId);
+
+    // Calculate start and end times
+    let startTime = new Date();
+    let endTime = new Date(
+      startTime.getTime() + parseInt(roomInfo.time) * 60 * 60 * 1000
+    );
+
+    // Calculate total cost
+    let totalCost = roomInfo.pricePerHour * parseInt(roomInfo.time);
+
+    // Format time and date
+    let formatTime = (date) =>
+      date.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+    let formatDate = (date) =>
+      date.toLocaleDateString("vi-VN", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
+
+    document.getElementById(
+      "room-client-name"
+    ).textContent = `Tên khách hàng: ${roomInfo.name || "Chưa có"}`;
     document.getElementById(
       "room-id-detail"
     ).textContent = `Số phòng: ${roomId}`;
@@ -508,6 +541,21 @@ function showRoomDetails() {
     document.getElementById(
       "room-status-detail"
     ).textContent = `Trạng thái: ${roomStatus}`;
+    document.getElementById(
+      "room-start-time"
+    ).textContent = `Thời gian bắt đầu: ${formatTime(startTime)}`;
+    document.getElementById(
+      "room-end-time"
+    ).textContent = `Thời gian kết thúc: ${formatTime(endTime)}`;
+    document.getElementById("room-date").textContent = `Ngày: ${formatDate(
+      startTime
+    )}`;
+    document.getElementById(
+      "room-price-per-hour"
+    ).textContent = `Giá/giờ: ${roomInfo.pricePerHour.toLocaleString()} VND`;
+    document.getElementById(
+      "room-total-cost"
+    ).textContent = `Tổng chi phí: ${totalCost.toLocaleString()} VND`;
 
     document.getElementById("room-details-overlay").style.display = "block";
   } else {

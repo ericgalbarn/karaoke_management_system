@@ -83,7 +83,7 @@
                       </div>
 <!-- Reservation Form  -->
       <form>
-        <div class="payment">
+        <div class="payment" id="room-form">
                   <h1 class="payTitle">Thông Tin Đặt Phòng</h1>
                   <label>Tên người đặt phòng</label>
                   <input id="name" name="name" type="text" placeholder="Nhập tên người đặt phòng...." class="payInput">
@@ -189,14 +189,20 @@
     <div id="room-details-overlay" class="overlay">
       <div id="room-details-card" class="details-card">
         <span class="close-details" onclick="closeRoomDetails()">&times;</span>
-        <h2>Thông tin chi tiết phòng</h2>
-        <p id="room-id-detail"></p>
+        <h2 class="details-heading">HÓA ĐƠN BÁN HÀNG</h2>
+        <p class="details-heading" id="room-id-detail"></p>
+        <p id="room-client-name"></p>
+        <p id="room-date"></p>
         <p id="room-capacity-detail"></p>
         <p id="room-type-detail"></p>
         <p id="room-status-detail"></p>
-        <p id="room-info-detail"></p>
+        <p id="room-start-time"></p>
+        <p id="room-end-time"></p>
+        <p id="room-price-per-hour"></p>
+        <p id="room-total-cost"></p>
       </div>
     </div>
+
 
   </body>
 </html>
