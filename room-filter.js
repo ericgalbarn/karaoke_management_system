@@ -1,12 +1,14 @@
+let selectedRoom = null;
+
 // Declaring the image variables
-const blue_crown = "./img/blue-crown.png";
-const yellow_crown = "./img/yellow-crown.png";
-const orange_crown = "./img/orange-crown.png";
-const red_crown = "./img/red-crown.png";
-const blue_com = "./img/blue-computer.png";
-const yellow_com = "./img/yellow-desktop.png";
-const red_com = "./img/red-computer.png";
-const orange_com = "./img/orange-computer.png";
+const blue_crown = "./img/blue_crown.png";
+const yellow_crown = "./img/yellow_crown.png";
+const orange_crown = "./img/orange_crown.png";
+const red_crown = "./img/red_crown.png";
+const blue_com = "./img/blue_com.png";
+const yellow_com = "./img/yellow_com.png";
+const red_com = "./img/red_com.png";
+const orange_com = "./img/orange_com.png";
 
 const roomData = {
   rooms: [
@@ -20,10 +22,10 @@ const roomData = {
       pricePerHour: 100000,
     },
     {
-      name: "Jeffrey Epstein ",
+      name: "Hùng ",
       id: "020",
       time: "6h",
-      capacity: "100",
+      capacity: "10",
       type: "Phòng VIP",
       image: blue_com,
       pricePerHour: 100000,
@@ -71,6 +73,7 @@ const roomData = {
       capacity: "12",
       type: "Phòng thường",
       image: yellow_crown,
+      pricePerHour: 100000,
     },
     {
       name: "Nam ",
@@ -96,25 +99,27 @@ const roomData = {
 // Count the number of each type of room
 let roomCounts = {
   blue_com: 0,
+  blue_crown: 0,
   yellow_com: 0,
+  yellow_crown: 0,
   red_com: 0,
+  red_crown: 0,
   orange_com: 0,
+  orange_crown: 0,
 };
-
-let selectedRoom = null;
 
 // Creating the Room Card
 function createRoomCards() {
   for (let i of roomData.rooms) {
     // Increment the count based on the image type
     if (i.image === blue_com || i.image === blue_crown) {
-      roomCounts.blue_com++;
+      roomCounts[i.image.split("/").pop().split(".")[0]]++;
     } else if (i.image === yellow_com || i.image === yellow_crown) {
-      roomCounts.yellow_com++;
+      roomCounts[i.image.split("/").pop().split(".")[0]]++;
     } else if (i.image === red_com || i.image === red_crown) {
-      roomCounts.red_com++;
+      roomCounts[i.image.split("/").pop().split(".")[0]]++;
     } else if (i.image === orange_com || i.image === orange_crown) {
-      roomCounts.orange_com++;
+      roomCounts[i.image.split("/").pop().split(".")[0]]++;
     }
 
     // Create Card
@@ -290,18 +295,18 @@ document.querySelector(".green-box").addEventListener("click", () => {
 });
 
 function updateFooterCounts() {
-  document.getElementById(
-    "phong-trong-count"
-  ).innerText = `(${roomCounts.blue_com})`;
-  document.getElementById(
-    "phong-cho-count"
-  ).innerText = `(${roomCounts.yellow_com})`;
-  document.getElementById(
-    "phong-dang-su-dung-count"
-  ).innerText = `(${roomCounts.red_com})`;
-  document.getElementById(
-    "phong-tam-count"
-  ).innerText = `(${roomCounts.orange_com})`;
+  document.getElementById("phong-trong-count").innerText = `(${
+    roomCounts.blue_com + roomCounts.blue_crown
+  })`;
+  document.getElementById("phong-cho-count").innerText = `(${
+    roomCounts.yellow_com + roomCounts.yellow_crown
+  })`;
+  document.getElementById("phong-dang-su-dung-count").innerText = `(${
+    roomCounts.red_com + roomCounts.red_crown
+  })`;
+  document.getElementById("phong-tam-count").innerText = `(${
+    roomCounts.orange_com + roomCounts.orange_crown
+  })`;
 }
 
 // Form creation
@@ -481,14 +486,21 @@ function handleF7Press() {
 }
 
 // Add event listener to "Xem chi tiết" button
-const viewDetailsButton = document.querySelector(".green-box:nth-of-type(5)");
-viewDetailsButton.addEventListener("click", showRoomDetails);
+document.addEventListener("DOMContentLoaded", function () {
+  const viewDetailsButton = document.querySelector(".green-box:nth-of-type(5)");
+  if (viewDetailsButton) {
+    viewDetailsButton.addEventListener("click", function () {
+      console.log("Xem chi tiết button clicked");
+      showRoomDetails();
+    });
+  }
+});
 
 // Add event listener for F8 key
 document.addEventListener("keydown", function (event) {
   if (event.key === "F8" || event.keyCode === 119) {
     event.preventDefault(); // Prevent the default F8 behavior
-    viewDetailsButton.click(); // Simulate a click on the "Xem chi tiết" button
+    showRoomDetails(); // Simulate a click on the "Xem chi tiết" button
   }
 });
 
@@ -502,19 +514,21 @@ function showRoomDetails() {
     let roomType = selectedRoom.classList.contains("vip-room")
       ? "Phòng VIP"
       : "Phòng thường";
-    let roomStatus = getRoomStatus(selectedRoom);
 
     // Find the room data
     let roomInfo = roomData.rooms.find((room) => room.id === roomId);
 
+    // Set default values if roomInfo is not found
+    let name = roomInfo ? roomInfo.name : "Chưa có";
+    let time = roomInfo ? roomInfo.time : "0";
+    let pricePerHour =
+      roomInfo && roomInfo.pricePerHour ? roomInfo.pricePerHour : 0;
+
     // Calculate start and end times
     let startTime = new Date();
     let endTime = new Date(
-      startTime.getTime() + parseInt(roomInfo.time) * 60 * 60 * 1000
+      startTime.getTime() + parseInt(time) * 60 * 60 * 1000
     );
-
-    // Calculate total cost
-    let totalCost = roomInfo.pricePerHour * parseInt(roomInfo.time);
 
     // Format time and date
     let formatTime = (date) =>
@@ -528,54 +542,52 @@ function showRoomDetails() {
 
     document.getElementById(
       "room-client-name"
-    ).textContent = `Tên khách hàng: ${roomInfo.name || "Chưa có"}`;
-    document.getElementById(
-      "room-id-detail"
-    ).textContent = `Số phòng: ${roomId}`;
+    ).textContent = `Tên khách hàng: ${name}`;
+    document.getElementById("room-id-detail").textContent = `P${roomId}`;
     document.getElementById(
       "room-capacity-detail"
-    ).textContent = `Sức chứa: ${roomCapacity}`;
+    ).textContent = `SL: ${roomCapacity}`;
     document.getElementById(
       "room-type-detail"
     ).textContent = `Loại phòng: ${roomType}`;
     document.getElementById(
       "room-status-detail"
-    ).textContent = `Trạng thái: ${roomStatus}`;
+    ).textContent = `Trạng thái: ${getRoomStatus(selectedRoom)}`;
     document.getElementById(
       "room-start-time"
-    ).textContent = `Thời gian bắt đầu: ${formatTime(startTime)}`;
+    ).textContent = `Giờ vào: ${formatTime(startTime)}`;
     document.getElementById(
       "room-end-time"
-    ).textContent = `Thời gian kết thúc: ${formatTime(endTime)}`;
+    ).textContent = `Giờ ra: ${formatTime(endTime)}`;
     document.getElementById("room-date").textContent = `Ngày: ${formatDate(
       startTime
     )}`;
     document.getElementById(
       "room-price-per-hour"
-    ).textContent = `Giá/giờ: ${roomInfo.pricePerHour.toLocaleString()} VND`;
-    document.getElementById(
-      "room-total-cost"
-    ).textContent = `Tổng chi phí: ${totalCost.toLocaleString()} VND`;
+    ).textContent = `Giá/giờ: ${pricePerHour.toLocaleString()} VND`;
+    document.getElementById("room-total-cost").textContent = `Tiền giờ: ${(
+      pricePerHour * parseInt(time)
+    ).toLocaleString()} VND`;
 
-    document.getElementById("room-details-overlay").style.display = "block";
+    // Show the overlay
+    const overlay = document.getElementById("room-details-overlay");
+    overlay.style.display = "block"; // Ensure the overlay is displayed
   } else {
     alert("Vui lòng chọn một phòng trước khi xem chi tiết.");
   }
 }
 
 function closeRoomDetails() {
-  document.getElementById("room-details-overlay").style.display = "none";
+  const overlay = document.getElementById("room-details-overlay");
+  overlay.style.display = "none"; // Hide the overlay
 }
 
-// Close the details card when clicking the close button
-document
-  .querySelector(".close-details")
-  .addEventListener("click", closeRoomDetails);
-
-// Close the details card when clicking outside of it
+// Close the overlay when clicking outside the details card
 window.addEventListener("click", function (event) {
-  // Check if the clicked element is NOT the card or any of its children
-  if (!document.getElementById("room-details-card").contains(event.target)) {
+  const overlay = document.getElementById("room-details-overlay");
+  // Contains the details so it's countable in the FooterUpdater
+  document.getElementById("room-details-card").contains(event.target);
+  if (event.target === overlay) {
     closeRoomDetails();
   }
 });
@@ -591,5 +603,128 @@ function getRoomStatus(room) {
     return "Phòng đang sử dụng";
   } else if (currentImg === orange_com || currentImg === orange_crown) {
     return "Phòng tạm";
+  }
+}
+
+// "Chuyển phòng button"
+
+// Add event listener to "Chuyển phòng" button
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("DOMContentLoaded event fired");
+  document
+    .querySelector(".grey-box:nth-of-type(6)")
+    .addEventListener("click", handleRoomChange);
+});
+
+// Add event listener for F9 key
+document.addEventListener("keydown", function (event) {
+  if (event.key === "F9" || event.keyCode === 120) {
+    event.preventDefault(); // Prevent the default F9 behavior
+    handleRoomChange();
+  }
+});
+
+function handleRoomChange() {
+  console.log("handleRoomChange called");
+  if (selectedRoom) {
+    console.log("selectedRoom:", selectedRoom);
+    showRoomChangeOptions();
+  } else {
+    console.log("No room selected");
+    alert("Vui lòng chọn một phòng trước khi chuyển phòng.");
+  }
+}
+
+// Create the showRoomChangeOptions function to display the room change options
+function showRoomChangeOptions() {
+  console.log("showRoomChangeOptions called");
+  let overlay = document.createElement("div");
+  overlay.id = "room-change-overlay";
+  overlay.className = "overlay";
+
+  let card = document.createElement("div");
+  card.id = "room-change-card";
+  card.className = "details-card";
+
+  card.innerHTML = `
+    <span class="close-details" onclick="closeRoomChangeOptions()">&times;</span>
+    <h2 class="details-heading">Chọn loại phòng mới</h2>
+    <button onclick="changeRoomType('blue_com')">Phòng trống</button>
+    <button onclick="changeRoomType('blue_crown')">Phòng trống VIP</button>
+    <button onclick="changeRoomType('yellow_com')">Phòng chờ</button>
+    <button onclick="changeRoomType('yellow_crown')">Phòng chờ VIP</button>
+    <button onclick="changeRoomType('red_com')">Phòng đang sử dụng</button>
+    <button onclick="changeRoomType('red_crown')">Phòng đang sử dụng VIP</button>
+    <button onclick="changeRoomType('orange_com')">Phòng tạm</button>
+    <button onclick="changeRoomType('orange_crown')">Phòng tạm VIP</button>
+  `;
+
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+}
+
+// Close the room change options
+function closeRoomChangeOptions() {
+  let overlay = document.getElementById("room-change-overlay");
+  if (overlay) {
+    document.body.removeChild(overlay);
+  }
+}
+
+// Implement the changeRoomType function to handle the room type change
+function changeRoomType(newType) {
+  if (selectedRoom) {
+    let image = selectedRoom.querySelector("img");
+    let currentType = image.getAttribute("src").split("/").pop().split(".")[0];
+
+    // Update the image
+    image.setAttribute("src", `./img/${newType}.png`);
+
+    // Update room counts
+    roomCounts[currentType]--;
+    roomCounts[newType]++;
+
+    // Update room class
+    selectedRoom.classList.remove("std-room", "vip-room");
+    if (newType.includes("crown")) {
+      selectedRoom.classList.add("vip-room");
+    } else {
+      selectedRoom.classList.add("std-room");
+    }
+
+    updateFooterCounts();
+    closeRoomChangeOptions();
+
+    showMessage(
+      `Đã chuyển phòng ${selectedRoom
+        .querySelector(".room-id")
+        .innerText.split(":")[1]
+        .trim()} thành ${getRoomStatusText(newType)}`
+    );
+
+    selectedRoom = null;
+  }
+}
+
+function getRoomStatusText(type) {
+  switch (type) {
+    case "blue_com":
+      return "Phòng trống";
+    case "blue_crown":
+      return "Phòng trống VIP";
+    case "yellow_com":
+      return "Phòng chờ";
+    case "yellow_crown":
+      return "Phòng chờ VIP";
+    case "red_com":
+      return "Phòng đang sử dụng";
+    case "red_crown":
+      return "Phòng đang sử dụng VIP";
+    case "orange_com":
+      return "Phòng tạm";
+    case "orange_crown":
+      return "Phòng tạm VIP";
+    default:
+      return "";
   }
 }

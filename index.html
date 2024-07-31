@@ -151,7 +151,7 @@
         <!-- Display -->
         <div class="display" >
           <div id="room"></div>
-          <script src="room-filter.js"></script>
+          
         </div>
       </div>
     </div>
@@ -160,19 +160,19 @@
               <!-- The first footer component  -->
         <div class="footer1">
           <div id="obj1">
-            <span> <img src="./img/blue-computer.png" width="24px" height="24px"> </span>
+            <span> <img src="./img/blue_com.png" width="24px" height="24px"> </span>
             <span class="icon-text">Phòng trống <span id="phong-trong-count">(0)</span></span>
           </div>
           <div id="obj2">
-            <span> <img src="./img/yellow-desktop.png" width="24px" height="24px"> </span>
+            <span> <img src="./img/yellow_com.png" width="24px" height="24px"> </span>
             <span class="icon-text">Phòng chờ <span id="phong-cho-count">(0)</span></span>
           </div>
           <div id="obj3">
-            <span> <img src="./img/red-computer.png" width="24px" height="24px"> </span>
+            <span> <img src="./img/red_com.png" width="24px" height="24px"> </span>
             <span class="icon-text">Phòng đang sử dụng <span id="phong-dang-su-dung-count">(0)</span></span>
           </div>
           <div id="obj4">
-            <span> <img src="./img/orange-computer.png" width="24px" height="24px"> </span>
+            <span> <img src="./img/orange_com.png" width="24px" height="24px"> </span>
             <span class="icon-text">Phòng tạm <span id="phong-tam-count">(0)</span></span>
           </div>
           <div id="obj5">
@@ -190,19 +190,22 @@
       <div id="room-details-card" class="details-card">
         <span class="close-details" onclick="closeRoomDetails()">&times;</span>
         <h2 class="details-heading">HÓA ĐƠN BÁN HÀNG</h2>
-        <p class="details-heading" id="room-id-detail"></p>
-        <p id="room-client-name"></p>
-        <p id="room-date"></p>
-        <p id="room-capacity-detail"></p>
-        <p id="room-type-detail"></p>
-        <p id="room-status-detail"></p>
-        <p id="room-start-time"></p>
-        <p id="room-end-time"></p>
-        <p id="room-price-per-hour"></p>
-        <p id="room-total-cost"></p>
+        <h4 class="details-heading" id="room-id-detail"></h4>
+        <div class="info-wrapper">
+          <p id="room-client-name"></p>
+          <p id="room-date"></p>
+          <p id="room-capacity-detail"></p>
+          <p id="room-type-detail"></p>
+          <p id="room-status-detail"></p>
+          <p id="room-start-time"></p>
+          <p id="room-end-time"></p>
+          <p id="room-price-per-hour"></p>
+          <h4 id="room-total-cost"></h4>
+        </div>
+        <hr/>
       </div>
     </div>
 
-
+    <script src="room-filter.js"></script>
   </body>
 </html>

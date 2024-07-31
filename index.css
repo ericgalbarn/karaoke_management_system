@@ -490,8 +490,10 @@ img {
   display: none;
 }
 
+h4 {
+  font-weight: 500;
+}
 // Room Details Styling
-
 #room-details-card {
   display: none;
 }
@@ -522,6 +524,15 @@ img {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 10px;
+}
+
+hr {
+  margin-top: 20px;
+}
+
+#room-price-per-hour {
+  display: none;
 }
 
 .close-details {
@@ -537,4 +548,31 @@ img {
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+.info-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+// Room change CSS
+#room-change-card button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #04cfcf;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#room-change-card button:hover {
+  background-color: #03a0a0;
+}
+
+#room-change-overlay {
+  display: block; /* This ensures the overlay is visible when added to the DOM */
 }
