@@ -462,14 +462,23 @@ img {
   height: 20px;
   position: absolute;
   top: 10px;
-  background-color: gray;
-  color: white;
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
   right: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   padding: 2px;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .card {
@@ -511,7 +520,7 @@ h4 {
 
 .details-card {
   background-color: #fefefe;
-  margin: 15% auto;
+  margin: 13% auto;
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
@@ -524,7 +533,7 @@ h4 {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 hr {
@@ -554,6 +563,7 @@ hr {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
+  overflow: hidden;
 }
 
 // Room change CSS
@@ -570,9 +580,38 @@ hr {
 }
 
 #room-change-card button:hover {
-  background-color: #03a0a0;
+  cursor: pointer;
 }
 
 #room-change-overlay {
   display: block; /* This ensures the overlay is visible when added to the DOM */
+  overflow-y: hidden;
+}
+
+.change-button {
+  width: 100vw;
+}
+
+#service-overlay {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+#service-card button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #04cfcf;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }

@@ -1,4 +1,5 @@
 let selectedRoom = null;
+let serviceCost = 0;
 
 // Declaring the image variables
 const blue_crown = "./img/blue_crown.png";
@@ -520,10 +521,11 @@ function showRoomDetails() {
 
     // Set default values if roomInfo is not found
     let name = roomInfo ? roomInfo.name : "Chưa có";
-    let time = roomInfo ? roomInfo.time : "0";
     let pricePerHour =
       roomInfo && roomInfo.pricePerHour ? roomInfo.pricePerHour : 0;
-
+    let time = roomInfo ? roomInfo.time : "0";
+    let roomCost = pricePerHour * parseInt(time);
+    let totalCost = roomCost + serviceCost;
     // Calculate start and end times
     let startTime = new Date();
     let endTime = new Date(
@@ -565,9 +567,15 @@ function showRoomDetails() {
     document.getElementById(
       "room-price-per-hour"
     ).textContent = `Giá/giờ: ${pricePerHour.toLocaleString()} VND`;
-    document.getElementById("room-total-cost").textContent = `Tiền giờ: ${(
-      pricePerHour * parseInt(time)
-    ).toLocaleString()} VND`;
+    document.getElementById(
+      "room-total-cost"
+    ).textContent = `Tiền giờ: ${roomCost.toLocaleString()} VND`;
+    document.getElementById(
+      "room-service-cost"
+    ).textContent = `Tiền dịch vụ: ${serviceCost.toLocaleString()} VND`;
+    document.getElementById(
+      "room-total"
+    ).textContent = `Tổng cộng: ${totalCost.toLocaleString()} VND`;
 
     // Show the overlay
     const overlay = document.getElementById("room-details-overlay");
@@ -648,15 +656,17 @@ function showRoomChangeOptions() {
 
   card.innerHTML = `
     <span class="close-details" onclick="closeRoomChangeOptions()">&times;</span>
-    <h2 class="details-heading">Chọn loại phòng mới</h2>
-    <button onclick="changeRoomType('blue_com')">Phòng trống</button>
-    <button onclick="changeRoomType('blue_crown')">Phòng trống VIP</button>
-    <button onclick="changeRoomType('yellow_com')">Phòng chờ</button>
-    <button onclick="changeRoomType('yellow_crown')">Phòng chờ VIP</button>
-    <button onclick="changeRoomType('red_com')">Phòng đang sử dụng</button>
-    <button onclick="changeRoomType('red_crown')">Phòng đang sử dụng VIP</button>
-    <button onclick="changeRoomType('orange_com')">Phòng tạm</button>
-    <button onclick="changeRoomType('orange_crown')">Phòng tạm VIP</button>
+    <h2 class="details-heading">Chọn phòng muốn chuyển</h2>
+    <div class="info-wrapper">
+      <button onclick="changeRoomType('blue_com')"><span><img src="./img/blue_com.png" alt="blue_com" height="50" width="50" class="change-button" /></span> Phòng trống</button>
+      <button onclick="changeRoomType('blue_crown')"><span><img src="./img/blue_crown.png" alt="blue_crown" height="50" width="50" class="change-button" /></span> Phòng trống VIP</button>
+      <button onclick="changeRoomType('yellow_com')"><span><img src="./img/yellow_com.png" alt="yellow_com" height="50" width="50" class="change-button" /></span> Phòng chờ</button>
+      <button onclick="changeRoomType('yellow_crown')"><span><img src="./img/yellow_crown.png" alt="yellow_crown" height="50" width="50" class="change-button" /></span> Phòng chờ VIP</button>
+      <button onclick="changeRoomType('red_com')"><span><img src="./img/red_com.png" alt="red_com" height="50" width="50" class="change-button" /></span> Phòng đang sử dụng</button>
+      <button onclick="changeRoomType('red_crown')"><span><img src="./img/red_crown.png" alt="red_crown" height="50" width="50" class="change-button" /></span> Phòng đang sử dụng VIP</button>
+      <button onclick="changeRoomType('orange_com')"><span><img src="./img/orange_com.png" alt="orange_com" height="50" width="50" class="change-button" /></span> Phòng tạm</button>
+      <button onclick="changeRoomType('orange_crown')"><span><img src="./img/orange_crown.png" alt="orange_crown" height="50" width="50" class="change-button" /></span> Phòng tạm VIP</button>
+    </div>
   `;
 
   overlay.appendChild(card);
@@ -699,7 +709,7 @@ function changeRoomType(newType) {
       `Đã chuyển phòng ${selectedRoom
         .querySelector(".room-id")
         .innerText.split(":")[1]
-        .trim()} thành ${getRoomStatusText(newType)}`
+        .trim()} sang ${getRoomStatusText(newType)}`
     );
 
     selectedRoom = null;
@@ -727,4 +737,60 @@ function getRoomStatusText(type) {
     default:
       return "";
   }
+}
+
+// Add event listener to "Dịch vụ" button
+document
+  .querySelector(".grey-box:nth-of-type(7)")
+  .addEventListener("click", handleServiceSelection);
+
+// Add event listener for F10 key
+document.addEventListener("keydown", function (event) {
+  if (event.key === "F10" || event.keyCode === 121) {
+    event.preventDefault(); // Prevent the default F10 behavior
+    handleServiceSelection();
+  }
+});
+
+function handleServiceSelection() {
+  console.log("Service selection triggered");
+  if (selectedRoom) {
+    showServiceOptions();
+  } else {
+    alert("Vui lòng chọn một phòng trước khi chọn dịch vụ.");
+  }
+}
+
+function showServiceOptions() {
+  let overlay = document.getElementById("service-overlay");
+  overlay.style.display = "block";
+}
+
+function closeServiceOptions() {
+  let overlay = document.getElementById("service-overlay");
+  overlay.style.display = "none";
+}
+
+function selectService(serviceType) {
+  console.log("Service selected:", serviceType);
+  let cost = 0;
+  if (serviceType === "room") {
+    cost = 100000; // Example cost for room service
+  } else if (serviceType === "food") {
+    cost = 150000; // Example cost for food service
+  }
+
+  if (
+    confirm(
+      `Bạn có chắc chắn muốn chọn dịch vụ này với giá ${cost.toLocaleString()} VND không?`
+    )
+  ) {
+    serviceCost += cost;
+    alert(
+      `Đã thêm dịch vụ. Tổng chi phí dịch vụ hiện tại: ${serviceCost.toLocaleString()} VND`
+    );
+  }
+
+  closeServiceOptions();
+  showRoomDetails(); // Update room details to show new total
 }
