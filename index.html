@@ -213,10 +213,11 @@
       <div id="service-card" class="details-card">
         <span class="close-details" onclick="closeServiceOptions()">&times;</span>
         <h2 class="details-heading">Chọn dịch vụ</h2>
-        <div class="info-wrapper">
-          <button onclick="selectService('room')">Dịch vụ phòng</button>
+        <div class="service-wrapper">
           <button onclick="selectService('food')">Dịch vụ ăn uống</button>
         </div>
+        <div id="food-options-container" style="display: none;"></div>
+        <button id="confirm-food-selection" style="display: none;" onclick="confirmFoodSelection()">Xác nhận</button>
       </div>
     </div>
     <script src="room-filter.js"></script>

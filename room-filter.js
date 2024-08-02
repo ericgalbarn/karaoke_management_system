@@ -23,10 +23,10 @@ const roomData = {
       pricePerHour: 100000,
     },
     {
-      name: "Hùng ",
-      id: "020",
-      time: "6h",
-      capacity: "10",
+      name: "Paul",
+      id: "003",
+      time: "25h",
+      capacity: "100",
       type: "Phòng VIP",
       image: blue_com,
       pricePerHour: 100000,
@@ -766,31 +766,104 @@ function showServiceOptions() {
   overlay.style.display = "block";
 }
 
-function closeServiceOptions() {
-  let overlay = document.getElementById("service-overlay");
-  overlay.style.display = "none";
+function selectService(serviceType) {
+  if (serviceType === "food") {
+    showFoodOptions();
+  }
 }
 
-function selectService(serviceType) {
-  console.log("Service selected:", serviceType);
-  let cost = 0;
-  if (serviceType === "room") {
-    cost = 100000; // Example cost for room service
-  } else if (serviceType === "food") {
-    cost = 150000; // Example cost for food service
+function showFoodOptions() {
+  let foodItems = [
+    { name: "Nước khoáng", price: 10000 },
+    { name: "Bia", price: 25000 },
+    { name: "Lạc", price: 10000 },
+    { name: "Bim bim", price: 5000 },
+    { name: "Mỳ tôm", price: 20000 },
+    { name: "Nước chanh", price: 50000 },
+    { name: "Ô mai", price: 30000 },
+    { name: "Nước cam", price: 55000 },
+  ];
+
+  let foodOptionsContainer = document.getElementById("food-options-container");
+  if (foodOptionsContainer) {
+    foodOptionsContainer.innerHTML = ""; // Clear previous options
+
+    foodItems.forEach((item, index) => {
+      let div = document.createElement("div");
+      let checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.id = `food-${index}`;
+      checkbox.name = `food-${index}`;
+      checkbox.value = item.price;
+
+      let label = document.createElement("label");
+      label.htmlFor = `food-${index}`;
+      label.textContent = `${item.name} - ${item.price.toLocaleString()} VND`;
+
+      div.appendChild(checkbox);
+      div.appendChild(label);
+      foodOptionsContainer.appendChild(div);
+    });
+
+    foodOptionsContainer.style.display = "block";
   }
 
-  if (
-    confirm(
-      `Bạn có chắc chắn muốn chọn dịch vụ này với giá ${cost.toLocaleString()} VND không?`
-    )
-  ) {
-    serviceCost += cost;
-    alert(
-      `Đã thêm dịch vụ. Tổng chi phí dịch vụ hiện tại: ${serviceCost.toLocaleString()} VND`
-    );
+  let confirmButton = document.getElementById("confirm-food-selection");
+  if (confirmButton) {
+    confirmButton.style.display = "block";
   }
 
-  closeServiceOptions();
-  showRoomDetails(); // Update room details to show new total
+  let serviceWrapper = document.querySelector(".service-wrapper");
+  if (serviceWrapper) {
+    serviceWrapper.style.display = "none";
+  }
+}
+
+function confirmFoodSelection() {
+  let selectedItems = document.querySelectorAll(
+    '#food-options-container input[type="checkbox"]:checked'
+  );
+  let totalCost = Array.from(selectedItems).reduce(
+    (sum, item) => sum + parseInt(item.value),
+    0
+  );
+
+  if (totalCost > 0) {
+    if (
+      confirm(
+        `Bạn có chắc chắn muốn chọn dịch vụ này với giá ${totalCost.toLocaleString()} VND không?`
+      )
+    ) {
+      serviceCost += totalCost;
+      alert(
+        `Đã thêm dịch vụ. Tổng chi phí dịch vụ hiện tại: ${serviceCost.toLocaleString()} VND`
+      );
+      closeServiceOptions();
+      showRoomDetails(); // Update room details to show new total
+    }
+  } else {
+    alert("Vui lòng chọn ít nhất một món.");
+  }
+}
+
+function closeServiceOptions() {
+  let overlay = document.getElementById("service-overlay");
+  if (overlay) {
+    overlay.style.display = "none";
+  }
+
+  let foodOptionsContainer = document.getElementById("food-options-container");
+  if (foodOptionsContainer) {
+    foodOptionsContainer.style.display = "none";
+  }
+
+  let confirmButton = document.getElementById("confirm-food-selection");
+  if (confirmButton) {
+    confirmButton.style.display = "none";
+  }
+
+  let serviceWrapper = document.querySelector(".service-wrapper");
+  if (serviceWrapper) {
+    serviceWrapper.style.display = "block";
+  }
 }

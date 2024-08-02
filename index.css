@@ -615,3 +615,32 @@ hr {
   border-radius: 5px;
   cursor: pointer;
 }
+
+// F10
+
+#food-options-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#food-options-container div {
+  display: flex;
+  align-items: center;
+}
+
+#food-options-container input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+#confirm-food-selection {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #04cfcf;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
