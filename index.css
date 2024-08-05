@@ -644,3 +644,27 @@ hr {
   border-radius: 5px;
   cursor: pointer;
 }
+
+// Context menu
+
+.context-menu {
+  display: none;
+  position: fixed;
+  background-color: #f9f9f9;
+  border: 2px solid #333;
+  border-radius: 4px;
+  padding: 5px 0;
+  min-width: 150px;
+  z-index: 10000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add shadow for visibility */
+}
+
+.context-menu-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  color: #333; /* Ensure text is visible */
+}
+
+.context-menu-item:hover {
+  background-color: #e0e0e0;
+}

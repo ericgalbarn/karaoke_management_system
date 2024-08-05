@@ -867,3 +867,92 @@ function closeServiceOptions() {
     serviceWrapper.style.display = "block";
   }
 }
+
+// Showing the context menu
+
+let contextMenu;
+let longPressTimer;
+const longPressDuration = 500; // 0.5 seconds
+
+function createContextMenu() {
+  contextMenu = document.createElement("div");
+  contextMenu.className = "context-menu";
+  contextMenu.style.display = "none";
+  document.body.appendChild(contextMenu);
+  console.log("Context menu created:", contextMenu);
+}
+
+function showContextMenu(x, y) {
+  console.log("Showing context menu at", x, y);
+  const utils = document.querySelectorAll(".green-box, .grey-box");
+  contextMenu.innerHTML = "";
+  utils.forEach((util) => {
+    const item = document.createElement("div");
+    item.className = "context-menu-item";
+    item.textContent = util.textContent.split("(")[0].trim();
+    item.onclick = () => {
+      util.click();
+      hideContextMenu();
+    };
+    contextMenu.appendChild(item);
+  });
+
+  contextMenu.style.left = `${x}px`;
+  contextMenu.style.top = `${y}px`;
+  contextMenu.style.display = "block";
+  console.log("Context menu HTML:", contextMenu.outerHTML);
+}
+
+function hideContextMenu() {
+  console.log("Hiding context menu");
+  if (contextMenu) {
+    contextMenu.style.display = "none";
+  }
+}
+
+function handleRightClick(e) {
+  console.log("Right-click detected");
+  e.preventDefault();
+  showContextMenu(e.clientX, e.clientY);
+}
+
+function handleTouchStart(e) {
+  console.log("Touch start detected");
+  if (e.touches.length === 1) {
+    longPressTimer = setTimeout(() => {
+      console.log("Long press detected");
+      const touch = e.touches[0];
+      showContextMenu(touch.clientX, touch.clientY);
+    }, longPressDuration);
+  }
+}
+
+function handleTouchEnd() {
+  if (longPressTimer) {
+    clearTimeout(longPressTimer);
+  }
+}
+
+function initializeContextMenu() {
+  createContextMenu();
+
+  document.addEventListener("click", hideContextMenu);
+
+  const roomCards = document.querySelectorAll(".card");
+  console.log("Number of room cards found:", roomCards.length);
+  roomCards.forEach((card) => {
+    card.addEventListener("contextmenu", handleRightClick);
+    card.addEventListener("touchstart", handleTouchStart);
+    card.addEventListener("touchend", handleTouchEnd);
+  });
+}
+
+// Call this function after creating room cards
+window.onload = () => {
+  console.log("Window loaded");
+  createRoomCards();
+  filterRoom("all");
+  updateFooterCounts();
+  initializeContextMenu();
+  console.log("Initialization complete");
+};
