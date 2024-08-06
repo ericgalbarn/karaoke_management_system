@@ -1,5 +1,8 @@
 let selectedRoom = null;
 let serviceCost = 0;
+// Declaring the context menu
+let contextMenu = document.getElementById("context-menu");
+let contextMenuItems = document.getElementById("context-menu-items");
 
 // Declaring the image variables
 const blue_crown = "./img/blue_crown.png";
@@ -109,6 +112,74 @@ let roomCounts = {
   orange_crown: 0,
 };
 
+// Add this function to create the context menu items
+function createContextMenuItems() {
+  let buttons = document.querySelectorAll(".green-box, .grey-box");
+  contextMenuItems.innerHTML = "";
+  buttons.forEach((button) => {
+    let li = document.createElement("li");
+    li.textContent = button.textContent.trim();
+    li.addEventListener("click", () => {
+      button.click();
+      hideContextMenu();
+    });
+    contextMenuItems.appendChild(li);
+  });
+}
+
+// Add these functions to show and hide the context menu
+function showContextMenu(e) {
+  createContextMenuItems();
+  contextMenu.style.display = "block";
+
+  // Check if it's a touch event
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+  // Adjust menu position to ensure it's within viewport
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  const menuWidth = contextMenu.offsetWidth;
+  const menuHeight = contextMenu.offsetHeight;
+
+  let left = clientX;
+  let top = clientY;
+
+  if (left + menuWidth > viewportWidth) {
+    left = viewportWidth - menuWidth;
+  }
+
+  if (top + menuHeight > viewportHeight) {
+    top = viewportHeight - menuHeight;
+  }
+
+  contextMenu.style.left = `${left}px`;
+  contextMenu.style.top = `${top}px`;
+}
+
+function hideContextMenu() {
+  contextMenu.style.display = "none";
+}
+
+let longPressTimer;
+const longPressDuration = 300; // 0.3 seconds
+
+// Add this function to handle the long press
+function handleLongPress(e) {
+  e.preventDefault(); // Prevent default touch behaviors
+  const touch = e.touches[0];
+  showContextMenu({
+    pageX: touch.pageX,
+    pageY: touch.pageY,
+  });
+}
+
+//  Close the context menu if the user clicks outside of it
+document.addEventListener("touchstart", (e) => {
+  if (!contextMenu.contains(e.target)) {
+    hideContextMenu();
+  }
+});
 // Creating the Room Card
 function createRoomCards() {
   for (let i of roomData.rooms) {
@@ -192,8 +263,40 @@ function createRoomCards() {
 
       updateFooter(i.id);
     });
+
+    card.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      selectedRoom = card;
+      showContextMenu(e);
+    });
+
+    // Add touch event listeners
+    card.addEventListener("touchstart", (e) => {
+      selectedRoom = card;
+      longPressTimer = setTimeout(() => handleLongPress(e), longPressDuration);
+    });
+
+    card.addEventListener("touchend", () => {
+      clearTimeout(longPressTimer);
+    });
+
+    card.addEventListener("touchmove", () => {
+      clearTimeout(longPressTimer);
+    });
   }
 }
+
+// Add event listeners to hide the context menu when clicking outside
+document.addEventListener("click", hideContextMenu);
+contextMenu.addEventListener("click", (e) => e.stopPropagation());
+
+// Prevent the default context menu on room cards
+document
+  .querySelector("#room")
+  .addEventListener("contextmenu", (e) => e.preventDefault());
+
+// Call createContextMenuItems on page load
+window.addEventListener("load", createContextMenuItems);
 
 let showMessage = (message) => {
   const messageBar = document.getElementById("message-bar");
@@ -813,92 +916,3 @@ function closeServiceOptions() {
     serviceWrapper.style.display = "block";
   }
 }
-
-// Showing the context menu
-
-let contextMenu;
-let longPressTimer;
-const longPressDuration = 500; // 0.5 seconds
-
-function createContextMenu() {
-  contextMenu = document.createElement("div");
-  contextMenu.className = "context-menu";
-  contextMenu.style.display = "none";
-  document.body.appendChild(contextMenu);
-  console.log("Context menu created:", contextMenu);
-}
-
-function showContextMenu(x, y) {
-  console.log("Showing context menu at", x, y);
-  const utils = document.querySelectorAll(".green-box, .grey-box");
-  contextMenu.innerHTML = "";
-  utils.forEach((util) => {
-    const item = document.createElement("div");
-    item.className = "context-menu-item";
-    item.textContent = util.textContent.split("(")[0].trim();
-    item.onclick = () => {
-      util.click();
-      hideContextMenu();
-    };
-    contextMenu.appendChild(item);
-  });
-
-  contextMenu.style.left = `${x}px`;
-  contextMenu.style.top = `${y}px`;
-  contextMenu.style.display = "block";
-  console.log("Context menu HTML:", contextMenu.outerHTML);
-}
-
-function hideContextMenu() {
-  console.log("Hiding context menu");
-  if (contextMenu) {
-    contextMenu.style.display = "none";
-  }
-}
-
-function handleRightClick(e) {
-  console.log("Right-click detected");
-  e.preventDefault();
-  showContextMenu(e.clientX, e.clientY);
-}
-
-function handleTouchStart(e) {
-  console.log("Touch start detected");
-  if (e.touches.length === 1) {
-    longPressTimer = setTimeout(() => {
-      console.log("Long press detected");
-      const touch = e.touches[0];
-      showContextMenu(touch.clientX, touch.clientY);
-    }, longPressDuration);
-  }
-}
-
-function handleTouchEnd() {
-  if (longPressTimer) {
-    clearTimeout(longPressTimer);
-  }
-}
-
-function initializeContextMenu() {
-  createContextMenu();
-
-  document.addEventListener("click", hideContextMenu);
-
-  const roomCards = document.querySelectorAll(".card");
-  console.log("Number of room cards found:", roomCards.length);
-  roomCards.forEach((card) => {
-    card.addEventListener("contextmenu", handleRightClick);
-    card.addEventListener("touchstart", handleTouchStart);
-    card.addEventListener("touchend", handleTouchEnd);
-  });
-}
-
-// Call this function after creating room cards
-window.onload = () => {
-  console.log("Window loaded");
-  createRoomCards();
-  filterRoom("all");
-  updateFooterCounts();
-  initializeContextMenu();
-  console.log("Initialization complete");
-};
