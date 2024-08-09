@@ -1019,25 +1019,22 @@ function dragOver(e) {
 function drop(e) {
   e.preventDefault();
   if (draggedCard !== this) {
+    // Store the classes and ID of both cards
+    let thisClasses = Array.from(this.classList);
+    let draggedClasses = Array.from(draggedCard.classList);
+    let thisId = this.querySelector(".room-id").innerText;
+    let draggedId = draggedCard.querySelector(".room-id").innerText;
     // Swap innerHTML
     let temp = this.innerHTML;
     this.innerHTML = draggedCard.innerHTML;
     draggedCard.innerHTML = temp;
+    // Restore the correct classes
+    this.className = draggedClasses.join(" ");
+    draggedCard.className = thisClasses.join(" ");
 
-    // Swap classes
-    let tempClasses = Array.from(this.classList);
-    this.classList = draggedCard.classList;
-    draggedCard.classList = new DOMTokenList();
-    tempClasses.forEach((cls) => draggedCard.classList.add(cls));
-
-    // Swap room types
-    let tempIsVip = this.classList.contains("vip-room");
-    if (draggedCard.classList.contains("vip-room") !== tempIsVip) {
-      this.classList.toggle("vip-room");
-      this.classList.toggle("std-room");
-      draggedCard.classList.toggle("vip-room");
-      draggedCard.classList.toggle("std-room");
-    }
+    // Update the room IDs
+    this.querySelector(".room-id").innerText = draggedId;
+    draggedCard.querySelector(".room-id").innerText = thisId;
 
     // Update event listeners
     updateCardEventListeners(this);
@@ -1092,9 +1089,8 @@ function updateCardEventListeners(card) {
 }
 
 function cardClickHandler() {
-  // Move your existing click event logic here
   let currentImg = this.querySelector("img").getAttribute("src");
-  let roomId = this.querySelector(".room-id").innerText.split(":")[1];
+  let roomId = this.querySelector(".room-id").innerText.split(":")[1].trim();
   if (currentImg === red_com || currentImg === red_crown) {
     alert("Phòng đã đầy. Vui lòng chọn phòng khác");
     selectedRoom = null;

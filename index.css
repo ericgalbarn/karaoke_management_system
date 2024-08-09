@@ -287,8 +287,9 @@ h1 {
 }
 #room {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  grid-template-columns: repeat(auto-fill, 130px);
   gap: 10px;
+  padding-left: 50px;
   max-width: 100%;
   max-height: 100%;
   overflow: scroll;
