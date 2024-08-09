@@ -264,37 +264,30 @@ h1 {
   font-size: 20px;
 }
 
-.green-box {
-  display: flex;
-  justify-content: space-between;
-  font-size: 20px;
-  min-width: 100%;
-  height: 30px;
-  background-color: #03c903;
-  border-radius: 5px;
-  font-weight: 400;
-  padding: 10px 0px;
-  align-items: center;
-  cursor: pointer;
-}
-
+.green-box,
 .grey-box {
   display: flex;
   justify-content: space-between;
-  font-size: 20px;
-  min-width: 100%;
-  height: 30px;
-  background-color: #d3d3d3;
-  border-radius: 5px;
-  font-weight: 400;
-  padding: 10px 0px;
   align-items: center;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
   cursor: pointer;
+  font-weight: 400;
+  font-size: 17px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+.green-box {
+  background-color: #03c903;
 }
 
+.grey-box {
+  background-color: #d3d3d3;
+}
 #room {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: 10px;
   max-width: 100%;
   max-height: 100%;
@@ -315,6 +308,14 @@ h1 {
   padding: 1em;
   border-radius: 5px;
   box-shadow: 1em 2em 2.5em rgba(1, 2, 68, 0.08);
+  cursor: pointer;
+}
+
+.card:hover {
+  opacity: 0.9;
+}
+.card:active {
+  opacity: 1;
 }
 
 .image-container {
@@ -336,45 +337,6 @@ img {
 }
 .hide {
   display: none;
-}
-
-/* Mild responsive design */
-@media screen and (max-width: 900px) {
-  img {
-    max-width: 100%;
-    object-fit: contain;
-    height: 10em;
-  }
-
-  .card {
-    max-width: 10em;
-    margin-top: 1em;
-  }
-  #room {
-    grid-template-columns: auto auto;
-    grid-column-gap: 1em;
-  }
-  header,
-  footer {
-    position: fixed;
-  }
-
-  .display {
-    -ms-overflow-style: none; /* for Internet Explorer, Edge */
-    scrollbar-width: none; /* for Firefox */
-    overflow: scroll;
-  }
-  .display::-webkit-scrollbar {
-    display: none;
-  }
-
-  .green-box {
-    display: block;
-  }
-
-  .grey-box {
-    display: block;
-  }
 }
 
 /* User's form styling */
@@ -478,10 +440,6 @@ img {
 .close:focus {
   color: black;
   text-decoration: none;
-  cursor: pointer;
-}
-
-.card {
   cursor: pointer;
 }
 
@@ -678,5 +636,62 @@ hr {
 
   .context-menu li {
     padding: 16px 20px; /* Even larger touch targets for mobile */
+  }
+}
+
+/* Responsive Design */
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  .body {
+    height: auto;
+    width: 100%;
+    position: relative;
+    top: 0;
+  }
+
+  .row1,
+  .row2 {
+    width: 100%;
+    display: block;
+  }
+
+  .timer,
+  .filter,
+  .utils,
+  .display {
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: scroll;
+  }
+
+  .filter {
+    min-width: 100vw;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .display {
+    margin-top: 10px;
+    padding-bottom: 35px;
+  }
+
+  .row2 {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .room-card {
+    flex: 1 1 48%; /* Adjust this percentage to control the size of the room cards */
+    margin: 1%;
+    box-sizing: border-box;
+  }
+
+  .select {
+    margin-left: 15px;
+  }
+
+  footer {
+    position: fixed;
   }
 }

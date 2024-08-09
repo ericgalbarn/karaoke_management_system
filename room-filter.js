@@ -35,6 +35,78 @@ const roomData = {
       pricePerHour: 100000,
     },
     {
+      name: "Paul",
+      id: "003",
+      time: "25h",
+      capacity: "100",
+      type: "Phòng VIP",
+      image: blue_com,
+      pricePerHour: 100000,
+    },
+    {
+      name: "Paul",
+      id: "003",
+      time: "25h",
+      capacity: "100",
+      type: "Phòng VIP",
+      image: blue_com,
+      pricePerHour: 100000,
+    },
+    {
+      name: "Paul",
+      id: "003",
+      time: "25h",
+      capacity: "100",
+      type: "Phòng VIP",
+      image: blue_com,
+      pricePerHour: 100000,
+    },
+    {
+      name: "Paul",
+      id: "003",
+      time: "25h",
+      capacity: "100",
+      type: "Phòng VIP",
+      image: blue_com,
+      pricePerHour: 100000,
+    },
+    {
+      name: "Paul",
+      id: "003",
+      time: "25h",
+      capacity: "100",
+      type: "Phòng VIP",
+      image: blue_com,
+      pricePerHour: 100000,
+    },
+    {
+      name: "Paul",
+      id: "003",
+      time: "25h",
+      capacity: "100",
+      type: "Phòng VIP",
+      image: blue_com,
+      pricePerHour: 100000,
+    },
+    {
+      name: "Paul",
+      id: "003",
+      time: "25h",
+      capacity: "100",
+      type: "Phòng VIP",
+      image: blue_com,
+      pricePerHour: 100000,
+    },
+    {
+      name: "Paul",
+      id: "003",
+      time: "25h",
+      capacity: "100",
+      type: "Phòng VIP",
+      image: blue_com,
+      pricePerHour: 100000,
+    },
+    {
       name: "Nam ",
       id: "029",
       time: "4h",
@@ -198,6 +270,13 @@ function createRoomCards() {
     let card = document.createElement("div");
     // Category on card and stay hidden
     card.classList.add("card", "hide");
+
+    // Add these lines to make the card draggable
+    card.draggable = true;
+    card.addEventListener("dragstart", dragStart);
+    card.addEventListener("dragover", dragOver);
+    card.addEventListener("drop", drop);
+
     if (
       i.image === blue_com ||
       i.image === yellow_com ||
@@ -318,12 +397,18 @@ function updateFooter(roomId) {
 }
 
 let filterRoom = (value) => {
-  // Display all rooms available
   let elements = document.querySelectorAll(".card");
   elements.forEach((element) => {
     if (value == "all") {
       element.classList.remove("hide");
+    } else if (value == "vip-room" || value == "std-room") {
+      if (element.classList.contains(value)) {
+        element.classList.remove("hide");
+      } else {
+        element.classList.add("hide");
+      }
     } else {
+      // Handle other filter criteria if any
       if (element.classList.contains(value)) {
         element.classList.remove("hide");
       } else {
@@ -915,4 +1000,129 @@ function closeServiceOptions() {
   if (serviceWrapper) {
     serviceWrapper.style.display = "block";
   }
+}
+
+// Drag and drop features
+let draggedCard = null;
+
+function dragStart(e) {
+  draggedCard = this;
+  e.dataTransfer.effectAllowed = "move";
+  this.classList.add("dragging");
+}
+
+function dragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = "move";
+}
+
+function drop(e) {
+  e.preventDefault();
+  if (draggedCard !== this) {
+    // Swap innerHTML
+    let temp = this.innerHTML;
+    this.innerHTML = draggedCard.innerHTML;
+    draggedCard.innerHTML = temp;
+
+    // Swap classes
+    let tempClasses = Array.from(this.classList);
+    this.classList = draggedCard.classList;
+    draggedCard.classList = new DOMTokenList();
+    tempClasses.forEach((cls) => draggedCard.classList.add(cls));
+
+    // Swap room types
+    let tempIsVip = this.classList.contains("vip-room");
+    if (draggedCard.classList.contains("vip-room") !== tempIsVip) {
+      this.classList.toggle("vip-room");
+      this.classList.toggle("std-room");
+      draggedCard.classList.toggle("vip-room");
+      draggedCard.classList.toggle("std-room");
+    }
+
+    // Update event listeners
+    updateCardEventListeners(this);
+    updateCardEventListeners(draggedCard);
+
+    // Update room counts
+    updateRoomCounts();
+  }
+  this.classList.remove("dragging");
+  return false;
+}
+
+function updateRoomCounts() {
+  // Reset counts
+  roomCounts = {
+    blue_com: 0,
+    blue_crown: 0,
+    yellow_com: 0,
+    yellow_crown: 0,
+    red_com: 0,
+    red_crown: 0,
+    orange_com: 0,
+    orange_crown: 0,
+  };
+
+  // Recount rooms
+  document.querySelectorAll(".card").forEach((card) => {
+    let img = card.querySelector("img");
+    let imgSrc = img.getAttribute("src");
+    let roomType = imgSrc.split("/").pop().split(".")[0];
+    roomCounts[roomType]++;
+  });
+
+  // Update footer counts
+  updateFooterCounts();
+}
+
+function updateCardEventListeners(card) {
+  // Remove existing listeners
+  card.removeEventListener("click", cardClickHandler);
+  card.removeEventListener("contextmenu", cardContextMenuHandler);
+  card.removeEventListener("touchstart", cardTouchStartHandler);
+  card.removeEventListener("touchend", cardTouchEndHandler);
+  card.removeEventListener("touchmove", cardTouchMoveHandler);
+
+  // Add new listeners
+  card.addEventListener("click", cardClickHandler);
+  card.addEventListener("contextmenu", cardContextMenuHandler);
+  card.addEventListener("touchstart", cardTouchStartHandler);
+  card.addEventListener("touchend", cardTouchEndHandler);
+  card.addEventListener("touchmove", cardTouchMoveHandler);
+}
+
+function cardClickHandler() {
+  // Move your existing click event logic here
+  let currentImg = this.querySelector("img").getAttribute("src");
+  let roomId = this.querySelector(".room-id").innerText.split(":")[1];
+  if (currentImg === red_com || currentImg === red_crown) {
+    alert("Phòng đã đầy. Vui lòng chọn phòng khác");
+    selectedRoom = null;
+  } else {
+    selectedRoom = this;
+  }
+  if (currentImg !== red_com && currentImg !== red_crown) {
+    showMessage(`Đã chọn phòng ${roomId}`);
+  }
+
+  updateFooter(roomId);
+}
+
+function cardContextMenuHandler(e) {
+  e.preventDefault();
+  selectedRoom = this;
+  showContextMenu(e);
+}
+
+function cardTouchStartHandler(e) {
+  selectedRoom = this;
+  longPressTimer = setTimeout(() => handleLongPress(e), longPressDuration);
+}
+
+function cardTouchEndHandler() {
+  clearTimeout(longPressTimer);
+}
+
+function cardTouchMoveHandler() {
+  clearTimeout(longPressTimer);
 }
