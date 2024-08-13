@@ -4,6 +4,10 @@ let serviceCost = 0;
 let contextMenu = document.getElementById("context-menu");
 let contextMenuItems = document.getElementById("context-menu-items");
 
+//  Declaring the touch variables
+let touchStartX, touchStartY, touchEndX, touchEndY;
+let touchedCard = null;
+
 // Declaring the image variables
 const blue_crown = "./img/blue_crown.png";
 const yellow_crown = "./img/yellow_crown.png";
@@ -27,7 +31,52 @@ const roomData = {
     },
     {
       name: "Paul",
-      id: "003",
+      id: "030",
+      time: "25h",
+      capacity: "100",
+      type: "Phòng VIP",
+      image: blue_com,
+      pricePerHour: 100000,
+    },
+    {
+      name: "Paul",
+      id: "013",
+      time: "25h",
+      capacity: "100",
+      type: "Phòng VIP",
+      image: blue_com,
+      pricePerHour: 100000,
+    },
+    {
+      name: "Paul",
+      id: "053",
+      time: "25h",
+      capacity: "100",
+      type: "Phòng VIP",
+      image: blue_com,
+      pricePerHour: 100000,
+    },
+    {
+      name: "Paul",
+      id: "063",
+      time: "25h",
+      capacity: "100",
+      type: "Phòng VIP",
+      image: blue_com,
+      pricePerHour: 100000,
+    },
+    {
+      name: "Paul",
+      id: "020",
+      time: "25h",
+      capacity: "100",
+      type: "Phòng VIP",
+      image: blue_com,
+      pricePerHour: 100000,
+    },
+    {
+      name: "Paul",
+      id: "093",
       time: "25h",
       capacity: "100",
       type: "Phòng VIP",
@@ -45,7 +94,7 @@ const roomData = {
     },
     {
       name: "Paul",
-      id: "003",
+      id: "078",
       time: "25h",
       capacity: "100",
       type: "Phòng VIP",
@@ -54,52 +103,7 @@ const roomData = {
     },
     {
       name: "Paul",
-      id: "003",
-      time: "25h",
-      capacity: "100",
-      type: "Phòng VIP",
-      image: blue_com,
-      pricePerHour: 100000,
-    },
-    {
-      name: "Paul",
-      id: "003",
-      time: "25h",
-      capacity: "100",
-      type: "Phòng VIP",
-      image: blue_com,
-      pricePerHour: 100000,
-    },
-    {
-      name: "Paul",
-      id: "003",
-      time: "25h",
-      capacity: "100",
-      type: "Phòng VIP",
-      image: blue_com,
-      pricePerHour: 100000,
-    },
-    {
-      name: "Paul",
-      id: "003",
-      time: "25h",
-      capacity: "100",
-      type: "Phòng VIP",
-      image: blue_com,
-      pricePerHour: 100000,
-    },
-    {
-      name: "Paul",
-      id: "003",
-      time: "25h",
-      capacity: "100",
-      type: "Phòng VIP",
-      image: blue_com,
-      pricePerHour: 100000,
-    },
-    {
-      name: "Paul",
-      id: "003",
+      id: "021",
       time: "25h",
       capacity: "100",
       type: "Phòng VIP",
@@ -144,7 +148,7 @@ const roomData = {
     },
     {
       name: "Nam ",
-      id: "021",
+      id: "029",
       time: "4h",
       capacity: "12",
       type: "Phòng thường",
@@ -275,6 +279,7 @@ function createRoomCards() {
     card.draggable = true;
     card.addEventListener("dragstart", dragStart);
     card.addEventListener("dragover", dragOver);
+    card.addEventListener("dragleave", dragLeave);
     card.addEventListener("drop", drop);
 
     if (
@@ -315,6 +320,9 @@ function createRoomCards() {
     container.appendChild(id);
 
     card.appendChild(container);
+
+    addCardEventListeners(card);
+
     document.getElementById("room").appendChild(card);
 
     // Add click event listener to the card
@@ -362,7 +370,98 @@ function createRoomCards() {
     card.addEventListener("touchmove", () => {
       clearTimeout(longPressTimer);
     });
+
+    card.addEventListener("touchstart", touchStart);
+    card.addEventListener("touchmove", touchMove);
+    card.addEventListener("touchend", touchEnd);
   }
+}
+
+function touchStart(e) {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+  touchedCard = this;
+}
+
+function touchMove(e) {
+  if (!touchedCard) return;
+  e.preventDefault();
+}
+
+function touchEnd(e) {
+  if (!touchedCard) return;
+  touchEndX = e.changedTouches[0].clientX;
+  touchEndY = e.changedTouches[0].clientY;
+
+  let deltaX = touchEndX - touchStartX;
+  let deltaY = touchEndY - touchStartY;
+
+  if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+    // Horizontal swipe
+    let cards = Array.from(document.querySelectorAll(".card"));
+    let currentIndex = cards.indexOf(touchedCard);
+    let targetIndex = deltaX > 0 ? currentIndex + 1 : currentIndex - 1;
+
+    if (targetIndex >= 0 && targetIndex < cards.length) {
+      swapCards(touchedCard, cards[targetIndex]);
+    }
+  }
+
+  touchedCard = null;
+}
+
+function swapCards(card1, card2) {
+  // Store the classes and ID of both cards
+  let card1Classes = Array.from(card1.classList);
+  let card2Classes = Array.from(card2.classList);
+  let card1Id = card1.querySelector(".room-id").innerText;
+  let card2Id = card2.querySelector(".room-id").innerText;
+
+  // Swap innerHTML
+  let temp = card1.innerHTML;
+  card1.innerHTML = card2.innerHTML;
+  card2.innerHTML = temp;
+
+  // Restore the correct classes
+  card1.className = card2Classes.join(" ");
+  card2.className = card1Classes.join(" ");
+
+  // Update the room IDs
+  card1.querySelector(".room-id").innerText = card2Id;
+  card2.querySelector(".room-id").innerText = card1Id;
+
+  // Update event listeners and data
+  updateCardData(card1);
+  updateCardData(card2);
+
+  // Update room counts
+  updateRoomCounts();
+
+  // Update footer
+  updateFooter(card2Id.split(":")[1].trim());
+}
+
+function updateCardData(card) {
+  // Remove existing listeners
+  card.removeEventListener("click", cardClickHandler);
+  card.removeEventListener("contextmenu", cardContextMenuHandler);
+  card.removeEventListener("touchstart", cardTouchStartHandler);
+  card.removeEventListener("touchend", cardTouchEndHandler);
+  card.removeEventListener("touchmove", cardTouchMoveHandler);
+
+  // Add new listeners
+  card.addEventListener("click", cardClickHandler);
+  card.addEventListener("contextmenu", cardContextMenuHandler);
+  card.addEventListener("touchstart", cardTouchStartHandler);
+  card.addEventListener("touchend", cardTouchEndHandler);
+  card.addEventListener("touchmove", cardTouchMoveHandler);
+
+  // Update drag and drop listeners
+  card.draggable = true;
+  card.addEventListener("dragstart", dragStart);
+  card.addEventListener("dragover", dragOver);
+  card.addEventListener("dragleave", dragLeave);
+  card.addEventListener("drop", drop);
 }
 
 // Add event listeners to hide the context menu when clicking outside
@@ -396,6 +495,7 @@ function updateFooter(roomId) {
   }
 }
 
+// Filter rooms by capacity
 let filterRoom = (value) => {
   let elements = document.querySelectorAll(".card");
   elements.forEach((element) => {
@@ -416,9 +516,9 @@ let filterRoom = (value) => {
       }
     }
   });
+  updateRoomCounts();
 };
 
-// Filter by capacity
 let filterByCapacity = (capacity) => {
   let elements = document.querySelectorAll(".card");
   elements.forEach((element) => {
@@ -431,6 +531,7 @@ let filterByCapacity = (capacity) => {
       element.classList.add("hide");
     }
   });
+  updateRoomCounts();
 };
 
 //Search button click
@@ -558,8 +659,11 @@ function handleRoomStatusChange(action) {
 
     switch (action) {
       case "waitingRoom":
-        if (currentImg === blue_com || currentImg === blue_crown) {
-          newImg = currentImg === blue_com ? yellow_com : yellow_crown;
+        if (
+          currentImg.includes("blue_com") ||
+          currentImg.includes("blue_crown")
+        ) {
+          newImg = currentImg.includes("blue_com") ? yellow_com : yellow_crown;
           if (confirm("Quý khách có chắc chắn muốn chọn phòng này không?")) {
             updateRoomStatus(currentImg, newImg);
           }
@@ -568,8 +672,11 @@ function handleRoomStatusChange(action) {
         }
         break;
       case "occupyWaitingRoom":
-        if (currentImg === yellow_com || currentImg === yellow_crown) {
-          newImg = currentImg === yellow_com ? red_com : red_crown;
+        if (
+          currentImg.includes("yellow_com") ||
+          currentImg.includes("yellow_crown")
+        ) {
+          newImg = currentImg.includes("yellow_com") ? red_com : red_crown;
           if (confirm("Quý khách có chắc chắn muốn chọn phòng này không?")) {
             updateRoomStatus(currentImg, newImg);
           }
@@ -1008,42 +1115,48 @@ let draggedCard = null;
 function dragStart(e) {
   draggedCard = this;
   e.dataTransfer.effectAllowed = "move";
-  this.classList.add("dragging");
+  this.setAttribute("data-dragging", "true");
+
+  // Create a custom drag image
+  let dragImage = document.createElement("div");
+  dragImage.classList.add("custom-drag-image");
+
+  // Copy the room number from the dragged card
+  let roomNumber = this.querySelector(".room-id").textContent.trim();
+  dragImage.textContent = roomNumber;
+
+  // Add the drag image to the body and set it as the drag image
+  document.body.appendChild(dragImage);
+  e.dataTransfer.setDragImage(
+    dragImage,
+    dragImage.offsetWidth / 2,
+    dragImage.offsetHeight / 2
+  );
+
+  // Remove the drag image after dragging
+  setTimeout(() => {
+    document.body.removeChild(dragImage);
+  }, 0);
 }
 
 function dragOver(e) {
   e.preventDefault();
   e.dataTransfer.dropEffect = "move";
+  this.classList.add("drag-over");
+}
+
+function dragLeave(e) {
+  this.classList.remove("drag-over");
 }
 
 function drop(e) {
   e.preventDefault();
+  this.classList.remove("drag-over");
   if (draggedCard !== this) {
-    // Store the classes and ID of both cards
-    let thisClasses = Array.from(this.classList);
-    let draggedClasses = Array.from(draggedCard.classList);
-    let thisId = this.querySelector(".room-id").innerText;
-    let draggedId = draggedCard.querySelector(".room-id").innerText;
-    // Swap innerHTML
-    let temp = this.innerHTML;
-    this.innerHTML = draggedCard.innerHTML;
-    draggedCard.innerHTML = temp;
-    // Restore the correct classes
-    this.className = draggedClasses.join(" ");
-    draggedCard.className = thisClasses.join(" ");
-
-    // Update the room IDs
-    this.querySelector(".room-id").innerText = draggedId;
-    draggedCard.querySelector(".room-id").innerText = thisId;
-
-    // Update event listeners
-    updateCardEventListeners(this);
-    updateCardEventListeners(draggedCard);
-
-    // Update room counts
-    updateRoomCounts();
+    swapCards(draggedCard, this);
   }
-  this.classList.remove("dragging");
+  draggedCard.removeAttribute("data-dragging");
+  draggedCard = null;
   return false;
 }
 
@@ -1079,13 +1192,31 @@ function updateCardEventListeners(card) {
   card.removeEventListener("touchstart", cardTouchStartHandler);
   card.removeEventListener("touchend", cardTouchEndHandler);
   card.removeEventListener("touchmove", cardTouchMoveHandler);
+  card.removeEventListener("touchstart", touchStart);
+  card.removeEventListener("touchmove", touchMove);
+  card.removeEventListener("touchend", touchEnd);
+  card.removeEventListener("dragstart", dragStart);
+  card.removeEventListener("dragover", dragOver);
+  card.removeEventListener("dragleave", dragLeave);
+  card.removeEventListener("drop", drop);
 
   // Add new listeners
+  addCardEventListeners(card);
+}
+
+function addCardEventListeners(card) {
   card.addEventListener("click", cardClickHandler);
   card.addEventListener("contextmenu", cardContextMenuHandler);
   card.addEventListener("touchstart", cardTouchStartHandler);
   card.addEventListener("touchend", cardTouchEndHandler);
   card.addEventListener("touchmove", cardTouchMoveHandler);
+  card.addEventListener("touchstart", touchStart);
+  card.addEventListener("touchmove", touchMove);
+  card.addEventListener("touchend", touchEnd);
+  card.addEventListener("dragstart", dragStart);
+  card.addEventListener("dragover", dragOver);
+  card.addEventListener("dragleave", dragLeave);
+  card.addEventListener("drop", drop);
 }
 
 function cardClickHandler() {

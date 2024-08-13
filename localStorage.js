@@ -19,7 +19,7 @@ form.addEventListener("submit", (e) => {
 
     if (data) {
       // Step 2: Send the data to the server
-      const response = await fetch("http://localhost:3000/update-json", {
+      const response = await fetch("http://localhost:5005/update-json", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
