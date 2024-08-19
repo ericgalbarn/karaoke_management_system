@@ -5,6 +5,9 @@
 }
 body {
   background-color: #d3d3d3;
+  height: 100vh; /* Ensure body takes full viewport height */
+  display: flex;
+  flex-direction: column;
 }
 
 * {
@@ -143,12 +146,12 @@ footer {
 }
 .display {
   max-width: 100%;
-  max-height: 97%;
   min-width: 84.5%;
   background-color: white;
   margin-top: 7px;
   margin-left: 7px;
-  overflow: hidden;
+  height: 97%; /* Set a fixed height for the display area */
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .status {
@@ -286,15 +289,13 @@ h1 {
   background-color: #d3d3d3;
 }
 #room {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 130px);
-  gap: 10px;
+  display: block;
   padding-left: 50px;
   max-width: 100%;
   max-height: 100%;
-  overflow: scroll;
-  -ms-overflow-style: none; /* for Internet Explorer, Edge */
-  scrollbar-width: none; /* for Firefox */
+  overflow: hidden; /* Keep this as hidden to avoid double scrollbars */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
   padding-bottom: 30px;
 }
 
@@ -333,9 +334,16 @@ h1 {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.card.disappearing {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
 .card[data-dragging="true"] {
   transform: scale(1.05);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  opacity: 0.7;
+  z-index: 10;
 }
 
 .card.drag-over {
@@ -391,12 +399,10 @@ img {
 /* User's form styling */
 .payment {
   width: 400px;
-  height: 400px;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
+  height: auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
   margin: auto;
   padding: 10px 50px;
   background-color: white;
@@ -405,6 +411,9 @@ img {
   box-shadow: 0px 0px 28px -3px rgba(0, 0, 0, 0.87);
   -webkit-box-shadow: 0px 0px 28px -3px rgba(0, 0, 0, 0.87);
   -moz-box-shadow: 0px 0px 28px -3px rgba(0, 0, 0, 0.87);
+  transform: translate(-50%, -50%); /* Adjust position */
+  padding: 10px 50px;
+  z-index: 1000; /* Ensure it's on top */
 }
 .payTitle {
   font-size: 20px;
@@ -705,8 +714,7 @@ hr {
 
   .timer,
   .filter,
-  .utils,
-  .display {
+  .utils {
     width: 100%;
     margin: 0 auto;
     padding: 10px;
@@ -743,4 +751,15 @@ hr {
   footer {
     position: fixed;
   }
+}
+
+// Grid Stack Css
+
+.grid-stack-item-content {
+  inset: 0 !important;
+}
+
+.grid-stack-item {
+  width: 140px !important;
+  height: 200px !important;
 }

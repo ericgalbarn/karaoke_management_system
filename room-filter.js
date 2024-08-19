@@ -8,6 +8,8 @@ let contextMenuItems = document.getElementById("context-menu-items");
 let touchStartX, touchStartY, touchEndX, touchEndY;
 let touchedCard = null;
 
+let grid;
+
 // Declaring the image variables
 const blue_crown = "./img/blue_crown.png";
 const yellow_crown = "./img/yellow_crown.png";
@@ -157,6 +159,15 @@ const roomData = {
     },
     {
       name: "Nam ",
+      id: "099",
+      time: "4h",
+      capacity: "12",
+      type: "Phòng thường",
+      image: yellow_crown,
+      pricePerHour: 100000,
+    },
+    {
+      name: "Nam ",
       id: "075",
       time: "4h",
       capacity: "12",
@@ -256,8 +267,67 @@ document.addEventListener("touchstart", (e) => {
     hideContextMenu();
   }
 });
+
+// Swap two cards
+function swapCards(card1, card2) {
+  let node1 = grid.getNodeDataByEl(card1.closest(".grid-stack-item"));
+  let node2 = grid.getNodeDataByEl(card2.closest(".grid-stack-item"));
+
+  // Swap positions
+  let tempX = node1.x;
+  let tempY = node1.y;
+  grid.update(card1.closest(".grid-stack-item"), { x: node2.x, y: node2.y });
+  grid.update(card2.closest(".grid-stack-item"), { x: tempX, y: tempY });
+
+  // Swap content
+  let temp = card1.innerHTML;
+  card1.innerHTML = card2.innerHTML;
+  card2.innerHTML = temp;
+
+  // Update event listeners and data
+  updateCardData(card1);
+  updateCardData(card2);
+
+  // Update room counts
+  updateRoomCounts();
+
+  // Update footer
+  updateFooter(card2.querySelector(".room-id").innerText.split(":")[1].trim());
+}
+
+// Update event listeners for a card
+function updateCardData(card) {
+  // Remove existing listeners
+  card.removeEventListener("click", cardClickHandler);
+  card.removeEventListener("contextmenu", cardContextMenuHandler);
+  card.removeEventListener("touchstart", cardTouchStartHandler);
+  card.removeEventListener("touchend", cardTouchEndHandler);
+  card.removeEventListener("touchmove", cardTouchMoveHandler);
+
+  // Add new listeners
+  card.addEventListener("click", cardClickHandler);
+  card.addEventListener("contextmenu", cardContextMenuHandler);
+  card.addEventListener("touchstart", cardTouchStartHandler);
+  card.addEventListener("touchend", cardTouchEndHandler);
+  card.addEventListener("touchmove", cardTouchMoveHandler);
+}
+
 // Creating the Room Card
 function createRoomCards() {
+  grid = GridStack.init({
+    column: 12,
+    cellHeight: 100,
+    disableResize: true,
+    animate: true,
+    float: false,
+    staticGrid: false,
+    draggable: {
+      handle: ".grid-stack-item-content",
+      scroll: false,
+      appendTo: "body",
+    },
+  });
+
   for (let i of roomData.rooms) {
     // Increment the count based on the image type
     if (i.image === blue_com || i.image === blue_crown) {
@@ -272,39 +342,40 @@ function createRoomCards() {
 
     // Create Card
     let card = document.createElement("div");
+    card.classList.add("grid-stack-item");
+    card.setAttribute("gs-w", "2");
+    card.setAttribute("gs-h", "2");
+    card.setAttribute("gs-no-resize", "true"); // Disable resizing for this item
+
+    let cardContent = document.createElement("div");
+    cardContent.classList.add("grid-stack-item-content", "card");
+
     // Category on card and stay hidden
-    card.classList.add("card", "hide");
-
-    // Add these lines to make the card draggable
-    card.draggable = true;
-    card.addEventListener("dragstart", dragStart);
-    card.addEventListener("dragover", dragOver);
-    card.addEventListener("dragleave", dragLeave);
-    card.addEventListener("drop", drop);
-
     if (
       i.image === blue_com ||
       i.image === yellow_com ||
       i.image === red_com ||
       i.image === orange_com
     ) {
-      card.classList.add("std-room");
+      cardContent.classList.add("std-room");
     } else if (
       i.image === blue_crown ||
       i.image === yellow_crown ||
       i.image === red_crown ||
       i.image === orange_crown
     ) {
-      card.classList.add("vip-room");
+      cardContent.classList.add("vip-room");
     }
-    //Image Div
+
+    // Image Div
     let imgContainer = document.createElement("div");
     imgContainer.classList.add("image-container");
     // Image Tag
     let image = document.createElement("img");
     image.setAttribute("src", i.image);
     imgContainer.appendChild(image);
-    card.appendChild(imgContainer);
+    cardContent.appendChild(imgContainer);
+
     // Container
     let container = document.createElement("div");
     container.classList.add("container");
@@ -319,62 +390,33 @@ function createRoomCards() {
     id.innerText = "Phòng: " + i.id;
     container.appendChild(id);
 
-    card.appendChild(container);
+    cardContent.appendChild(container);
+    card.appendChild(cardContent);
 
-    addCardEventListeners(card);
+    addCardEventListeners(cardContent);
 
-    document.getElementById("room").appendChild(card);
-
-    // Add click event listener to the card
-    card.addEventListener("click", () => {
-      let currentImg = card.querySelector("img").getAttribute("src");
-      let roomId = card.querySelector(".room-id").innerText.split(":")[1]; // Extract room ID
-      if (currentImg === red_com || currentImg === red_crown) {
-        alert("Phòng đã đầy. Vui lòng chọn phòng khác");
-        selectedRoom = null;
-      } else if (
-        currentImg === blue_com ||
-        currentImg === blue_crown ||
-        currentImg === yellow_com ||
-        currentImg === yellow_crown ||
-        currentImg === orange_com ||
-        currentImg === orange_crown
-      ) {
-        selectedRoom = card;
-      } else {
-        selectedRoom = null;
-      }
-      if (currentImg !== red_com && currentImg !== red_crown) {
-        showMessage(`Đã chọn phòng ${roomId}`);
-      }
-
-      updateFooter(i.id);
-    });
-
-    card.addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-      selectedRoom = card;
-      showContextMenu(e);
-    });
-
-    // Add touch event listeners
-    card.addEventListener("touchstart", (e) => {
-      selectedRoom = card;
-      longPressTimer = setTimeout(() => handleLongPress(e), longPressDuration);
-    });
-
-    card.addEventListener("touchend", () => {
-      clearTimeout(longPressTimer);
-    });
-
-    card.addEventListener("touchmove", () => {
-      clearTimeout(longPressTimer);
-    });
-
-    card.addEventListener("touchstart", touchStart);
-    card.addEventListener("touchmove", touchMove);
-    card.addEventListener("touchend", touchEnd);
+    grid.addWidget(card);
   }
+
+  updateFooterCounts();
+
+  // Add drag and drop event listeners
+  grid.on("dragstart", function (event, el) {
+    el.classList.add("dragging");
+  });
+
+  grid.on("dragstop", function (event, el) {
+    el.classList.remove("dragging");
+    let dropTarget = document.elementFromPoint(event.pageX, event.pageY);
+    let cardElement = dropTarget.closest(".grid-stack-item-content");
+
+    if (
+      cardElement &&
+      cardElement !== el.querySelector(".grid-stack-item-content")
+    ) {
+      swapCards(el.querySelector(".grid-stack-item-content"), cardElement);
+    }
+  });
 }
 
 function touchStart(e) {
@@ -410,60 +452,6 @@ function touchEnd(e) {
   touchedCard = null;
 }
 
-function swapCards(card1, card2) {
-  // Store the classes and ID of both cards
-  let card1Classes = Array.from(card1.classList);
-  let card2Classes = Array.from(card2.classList);
-  let card1Id = card1.querySelector(".room-id").innerText;
-  let card2Id = card2.querySelector(".room-id").innerText;
-
-  // Swap innerHTML
-  let temp = card1.innerHTML;
-  card1.innerHTML = card2.innerHTML;
-  card2.innerHTML = temp;
-
-  // Restore the correct classes
-  card1.className = card2Classes.join(" ");
-  card2.className = card1Classes.join(" ");
-
-  // Update the room IDs
-  card1.querySelector(".room-id").innerText = card2Id;
-  card2.querySelector(".room-id").innerText = card1Id;
-
-  // Update event listeners and data
-  updateCardData(card1);
-  updateCardData(card2);
-
-  // Update room counts
-  updateRoomCounts();
-
-  // Update footer
-  updateFooter(card2Id.split(":")[1].trim());
-}
-
-function updateCardData(card) {
-  // Remove existing listeners
-  card.removeEventListener("click", cardClickHandler);
-  card.removeEventListener("contextmenu", cardContextMenuHandler);
-  card.removeEventListener("touchstart", cardTouchStartHandler);
-  card.removeEventListener("touchend", cardTouchEndHandler);
-  card.removeEventListener("touchmove", cardTouchMoveHandler);
-
-  // Add new listeners
-  card.addEventListener("click", cardClickHandler);
-  card.addEventListener("contextmenu", cardContextMenuHandler);
-  card.addEventListener("touchstart", cardTouchStartHandler);
-  card.addEventListener("touchend", cardTouchEndHandler);
-  card.addEventListener("touchmove", cardTouchMoveHandler);
-
-  // Update drag and drop listeners
-  card.draggable = true;
-  card.addEventListener("dragstart", dragStart);
-  card.addEventListener("dragover", dragOver);
-  card.addEventListener("dragleave", dragLeave);
-  card.addEventListener("drop", drop);
-}
-
 // Add event listeners to hide the context menu when clicking outside
 document.addEventListener("click", hideContextMenu);
 contextMenu.addEventListener("click", (e) => e.stopPropagation());
@@ -495,13 +483,26 @@ function updateFooter(roomId) {
   }
 }
 
+// Helper function to rearrange the visible cards
+function rearrangeVisibleCards() {
+  let visibleCards = Array.from(document.querySelectorAll(".card:not(.hide)"));
+  let container = document.querySelector("#room");
+
+  visibleCards.forEach((card, index) => {
+    let x = (index % 6) * 2; // Assuming 6 cards per row
+    let y = Math.floor(index / 6) * 2;
+    let gridItem = card.closest(".grid-stack-item");
+    grid.update(gridItem, { x: x, y: y });
+  });
+}
+
 // Filter rooms by capacity
-let filterRoom = (value) => {
+function filterRoom(value) {
   let elements = document.querySelectorAll(".card");
   elements.forEach((element) => {
-    if (value == "all") {
+    if (value === "all" || value === "Tất cả") {
       element.classList.remove("hide");
-    } else if (value == "vip-room" || value == "std-room") {
+    } else if (value === "vip-room" || value === "std-room") {
       if (element.classList.contains(value)) {
         element.classList.remove("hide");
       } else {
@@ -516,8 +517,42 @@ let filterRoom = (value) => {
       }
     }
   });
-  updateRoomCounts();
-};
+  rearrangeVisibleCards();
+  updateFooterCountsForCurrentFilter();
+}
+
+// Update Footer counts after filter
+function updateFooterCountsAfterFilter() {
+  let visibleRooms = {
+    blue_com: 0,
+    blue_crown: 0,
+    yellow_com: 0,
+    yellow_crown: 0,
+    red_com: 0,
+    red_crown: 0,
+    orange_com: 0,
+    orange_crown: 0,
+  };
+
+  document.querySelectorAll(".card:not(.hide)").forEach((card) => {
+    let imgSrc = card.querySelector("img").getAttribute("src");
+    let roomType = imgSrc.split("/").pop().split(".")[0];
+    visibleRooms[roomType]++;
+  });
+
+  document.getElementById("phong-trong-count").innerText = `(${
+    visibleRooms.blue_com + visibleRooms.blue_crown
+  })`;
+  document.getElementById("phong-cho-count").innerText = `(${
+    visibleRooms.yellow_com + visibleRooms.yellow_crown
+  })`;
+  document.getElementById("phong-dang-su-dung-count").innerText = `(${
+    visibleRooms.red_com + visibleRooms.red_crown
+  })`;
+  document.getElementById("phong-tam-count").innerText = `(${
+    visibleRooms.orange_com + visibleRooms.orange_crown
+  })`;
+}
 
 let filterByCapacity = (capacity) => {
   let elements = document.querySelectorAll(".card");
@@ -551,6 +586,8 @@ document.getElementById("search").addEventListener("click", () => {
       cards[index].classList.add("hide");
     }
   });
+  rearrangeVisibleCards();
+  updateRoomCounts();
 });
 
 // Attach event listeners to capacity filters
@@ -563,21 +600,34 @@ document.querySelectorAll(".filter-capacity").forEach((button) => {
 // Add event listener to "Đặt phòng ngay" button
 document.querySelector(".green-box").addEventListener("click", () => {
   if (selectedRoom) {
-    if (confirm("Quý khách có chắc chắn muốn chọn phòng này không?")) {
-      let image = selectedRoom.querySelector("img");
-      let currentImg = image.getAttribute("src");
-      if (currentImg === blue_com) {
-        image.setAttribute("src", red_com);
-        roomCounts.blue_com--;
-        roomCounts.red_com++;
-      } else if (currentImg === blue_crown) {
-        image.setAttribute("src", red_crown);
-        roomCounts.blue_crown--;
-        roomCounts.red_crown++;
-      }
+    let currentImg = selectedRoom.querySelector("img").getAttribute("src");
+    if (currentImg === red_com || currentImg === red_crown) {
+      alert("Vui lòng chọn phòng trống có sẵn.");
+    } else {
+      if (confirm("Quý khách có chắc chắn muốn chọn phòng này không?")) {
+        let image = selectedRoom.querySelector("img");
+        let newImg;
+        if (currentImg === blue_com) {
+          newImg = red_com;
+        } else if (currentImg === blue_crown) {
+          newImg = red_crown;
+        } else if (currentImg === orange_com) {
+          newImg = red_com;
+        } else if (currentImg === orange_crown) {
+          newImg = red_crown;
+        } else if (currentImg === yellow_com) {
+          newImg = red_com;
+        } else if (currentImg === yellow_crown) {
+          newImg = red_crown;
+        }
 
-      updateFooterCounts();
-      selectedRoom = null;
+        if (newImg) {
+          image.setAttribute("src", newImg);
+          updateFooterCountsForCurrentFilter();
+        }
+
+        selectedRoom = null;
+      }
     }
   } else {
     alert("Vui lòng chọn phòng trống có sẵn.");
@@ -617,13 +667,44 @@ window.onload = () => {
   createRoomCards();
   filterRoom("all");
   updateFooterCounts();
+  setActiveFilter("#all-room");
+
+  document.querySelector("#all-room").addEventListener("click", () => {
+    filterRoom("all");
+    setActiveFilter("#all-room");
+  });
+  document.querySelector("#std-room").addEventListener("click", () => {
+    filterRoom("std-room");
+    setActiveFilter("#std-room");
+  });
+  document.querySelector("#vip-room").addEventListener("click", () => {
+    filterRoom("vip-room");
+    setActiveFilter("#vip-room");
+  });
 };
+
+// Add this new function to set the active filter
+function setActiveFilter(selector) {
+  document
+    .querySelectorAll("#all-room, #std-room, #vip-room")
+    .forEach((el) => el.classList.remove("active"));
+  document.querySelector(selector).classList.add("active");
+}
 
 // Modify the F4 Button from the User's keyboard to assign F4 key command with the "Đặt phòng" button
 function handleF4Press() {
-  const greenBox = document.querySelector(".green-box:first-of-type");
-  if (greenBox) {
-    greenBox.click(); // Simulate a click on the first "Đặt phòng ngay" button
+  if (selectedRoom) {
+    let currentImg = selectedRoom.querySelector("img").getAttribute("src");
+    if (currentImg === red_com || currentImg === red_crown) {
+      alert("Vui lòng chọn phòng trống có sẵn.");
+    } else {
+      const greenBox = document.querySelector(".green-box:first-of-type");
+      if (greenBox) {
+        greenBox.click();
+      }
+    }
+  } else {
+    alert("Vui lòng chọn phòng trống có sẵn.");
   }
 }
 
@@ -922,11 +1003,50 @@ function closeRoomChangeOptions() {
   }
 }
 
+// Function to update footer counts based on current filter
+function updateFooterCountsForCurrentFilter() {
+  let currentFilter = document.querySelector(".btn-mr.active")
+    ? document.querySelector(".btn-mr.active").textContent.trim()
+    : "Tất cả";
+  let visibleRooms = {
+    blue_com: 0,
+    blue_crown: 0,
+    yellow_com: 0,
+    yellow_crown: 0,
+    red_com: 0,
+    red_crown: 0,
+    orange_com: 0,
+    orange_crown: 0,
+  };
+
+  document.querySelectorAll(".card:not(.hide)").forEach((card) => {
+    let imgSrc = card.querySelector("img").getAttribute("src");
+    let roomType = imgSrc.split("/").pop().split(".")[0];
+    visibleRooms[roomType]++;
+  });
+
+  document.getElementById("phong-trong-count").innerText = `(${
+    visibleRooms.blue_com + visibleRooms.blue_crown
+  })`;
+  document.getElementById("phong-cho-count").innerText = `(${
+    visibleRooms.yellow_com + visibleRooms.yellow_crown
+  })`;
+  document.getElementById("phong-dang-su-dung-count").innerText = `(${
+    visibleRooms.red_com + visibleRooms.red_crown
+  })`;
+  document.getElementById("phong-tam-count").innerText = `(${
+    visibleRooms.orange_com + visibleRooms.orange_crown
+  })`;
+}
+
 // Implement the changeRoomType function to handle the room type change
 function changeRoomType(newType) {
   if (selectedRoom) {
     let image = selectedRoom.querySelector("img");
     let currentType = image.getAttribute("src").split("/").pop().split(".")[0];
+    let currentFilter = document.querySelector(".btn-mr.active")
+      ? document.querySelector(".btn-mr.active").textContent.trim()
+      : "Tất cả";
 
     // Update the image
     image.setAttribute("src", `./img/${newType}.png`);
@@ -943,9 +1063,18 @@ function changeRoomType(newType) {
       selectedRoom.classList.add("std-room");
     }
 
-    updateFooterCounts();
-    closeRoomChangeOptions();
+    // If the current filter is "Tất cả", do not hide the room
+    if (currentFilter !== "Tất cả") {
+      // If the new type is not the current filter, hide the room
+      if (
+        (currentFilter === "vip-room" && !newType.includes("crown")) ||
+        (currentFilter === "std-room" && newType.includes("crown"))
+      ) {
+        selectedRoom.classList.add("hide");
+      }
+    }
 
+    updateFooterCountsForCurrentFilter();
     showMessage(
       `Đã chuyển phòng ${selectedRoom
         .querySelector(".room-id")
@@ -953,6 +1082,7 @@ function changeRoomType(newType) {
         .trim()} sang ${getRoomStatusText(newType)}`
     );
 
+    closeRoomChangeOptions();
     selectedRoom = null;
   }
 }
@@ -1109,57 +1239,6 @@ function closeServiceOptions() {
   }
 }
 
-// Drag and drop features
-let draggedCard = null;
-
-function dragStart(e) {
-  draggedCard = this;
-  e.dataTransfer.effectAllowed = "move";
-  this.setAttribute("data-dragging", "true");
-
-  // Create a custom drag image
-  let dragImage = document.createElement("div");
-  dragImage.classList.add("custom-drag-image");
-
-  // Copy the room number from the dragged card
-  let roomNumber = this.querySelector(".room-id").textContent.trim();
-  dragImage.textContent = roomNumber;
-
-  // Add the drag image to the body and set it as the drag image
-  document.body.appendChild(dragImage);
-  e.dataTransfer.setDragImage(
-    dragImage,
-    dragImage.offsetWidth / 2,
-    dragImage.offsetHeight / 2
-  );
-
-  // Remove the drag image after dragging
-  setTimeout(() => {
-    document.body.removeChild(dragImage);
-  }, 0);
-}
-
-function dragOver(e) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = "move";
-  this.classList.add("drag-over");
-}
-
-function dragLeave(e) {
-  this.classList.remove("drag-over");
-}
-
-function drop(e) {
-  e.preventDefault();
-  this.classList.remove("drag-over");
-  if (draggedCard !== this) {
-    swapCards(draggedCard, this);
-  }
-  draggedCard.removeAttribute("data-dragging");
-  draggedCard = null;
-  return false;
-}
-
 function updateRoomCounts() {
   // Reset counts
   roomCounts = {
@@ -1195,10 +1274,6 @@ function updateCardEventListeners(card) {
   card.removeEventListener("touchstart", touchStart);
   card.removeEventListener("touchmove", touchMove);
   card.removeEventListener("touchend", touchEnd);
-  card.removeEventListener("dragstart", dragStart);
-  card.removeEventListener("dragover", dragOver);
-  card.removeEventListener("dragleave", dragLeave);
-  card.removeEventListener("drop", drop);
 
   // Add new listeners
   addCardEventListeners(card);
@@ -1213,10 +1288,6 @@ function addCardEventListeners(card) {
   card.addEventListener("touchstart", touchStart);
   card.addEventListener("touchmove", touchMove);
   card.addEventListener("touchend", touchEnd);
-  card.addEventListener("dragstart", dragStart);
-  card.addEventListener("dragover", dragOver);
-  card.addEventListener("dragleave", dragLeave);
-  card.addEventListener("drop", drop);
 }
 
 function cardClickHandler() {
