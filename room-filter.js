@@ -790,7 +790,7 @@ function updateRoomStatus(oldImg, newImg) {
   roomCounts[oldImg.split("/").pop().split(".")[0]]--;
   roomCounts[newImg.split("/").pop().split(".")[0]]++;
 
-  updateFooterCounts();
+  updateFooterCountsForCurrentFilter();
   selectedRoom = null;
 }
 
